@@ -1,8 +1,7 @@
 -- CREATING TABLES
 CREATE TABLE CRIMINAL (
     criminal_id INT,
-    criminal_first VARCHAR(40),
-    ciminal_last VARCHAR (40),
+    criminal_name VARCHAR(40),
     criminal_address VARCHAR(150),
     criminal_phonenum VARCHAR(12),
     violent_offender_stat BOOLEAN,
@@ -29,7 +28,6 @@ CREATE TABLE CRIME_CASE (
     case_id INT,
     appeal_status VARCHAR(20) REFERENCES APPEAL(appeal_status),
     date_charged DATE REFERENCES CHARGE(date_charged),
-    sentence_id INT REFERENCES SENTENCING(sentence_id),
     num_appeal INT,
     charge_status VARCHAR(10),
     PRIMARY KEY(case_id)
@@ -58,13 +56,11 @@ CREATE TABLE FINE (
 
 CREATE TABLE OFFICER (
     badge_number INT,
-    office_first VARCHAR(40),
-    officer_last VARCHAR(40),
+    officer_name VARCHAR(40),
     precinct VARCHAR(40),
     officer_phonenum VARCHAR(12),
     activity_status VARCHAR(20),
     officer_type VARCHAR(20),
-    officer_address VARCHAR(150),
     PRIMARY KEY(badge_number)
 );
 
@@ -73,13 +69,7 @@ CREATE TABLE ARREST (
     badge_number INT REFERENCES OFFICER(badge_number),
     crime_code INT REFERENCES CRIME(crime_code),
     arrest_date DATE,
-    PRIMARY KEY(criminal_id, badge_number, arrest_date)
-);
-
-CREATE TABLE PROBATION (
-    criminal_id INT REFERENCES CRIMINAL(criminal_id),
-    badge_number INT REFERENCES OFFICER(badge_number),
-    PRIMARY KEY(criminal_id, badge_number)
+    PRIMARY KEY(criminal_id, badge_number, crime_code, arrest_date)
 );
 
 CREATE TABLE HEARING (
@@ -98,7 +88,7 @@ CREATE TABLE SENTENCING (
     end_date DATE,
     num_violations INT,
     sentence_type VARCHAR(40),
-    PRIMARY KEY(sentence_id)
+    PRIMARY KEY(criminal_id, hearing_date, sentence_id)
 );
 
 CREATE TABLE VIOLATION (
@@ -320,117 +310,3 @@ VALUES
 ('VIOL013', 13, 113, 'Sexual assault on a minor.'),
 ('VIOL014', 14, 114, 'Embezzlement of company funds.'),
 ('VIOL015', 15, 115, 'Stalking and harassment.');
-
---SQL CODE
-
--- 3 MODES OF CRIMINAL SEARCH --> redirects to search result page
-SELECT criminal.name, criminal.alias, criminal.criminal_id, criminal.probation_status, sentencing.ending_date as release_date, hearing.hearing_date as next_hearing
-FROM criminal INNER JOIN hearing ON criminal.criminal_id = hearing.criminal_id
-INNER JOIN sentencing ON hearing.hearing_date = sentencing.hearing_date
-WHERE criminal.alias LIKE <ALIAS>
-
-SELECT criminal.name, criminal.alias, criminal.criminal_id, criminal.probation_status, sentencing.ending_date as release_date, hearing.hearing_date as next_hearing
-FROM criminal INNER JOIN hearing ON criminal.criminal_id = hearing.criminal_id
-INNER JOIN sentencing ON hearing.hearing_date = sentencing.hearing_date
-WHERE criminal.first_name LIKE <FIRST NAME> AND criminal.last_name LIKE <LAST NAME>
-
-SELECT criminal.name, criminal.alias, criminal.criminal_id, criminal.probation_status, sentencing.ending_date as release_date, hearing.hearing_date as next_hearing
-FROM criminal INNER JOIN hearing ON criminal.criminal_id = hearing.criminal_id
-INNER JOIN sentencing ON hearing.hearing_date = sentencing.hearing_date
-WHERE hearing.case_id LIKE <CASE NUMBER>
-
--- To get the number of matching results, we simply do:
-SELECT COUNT(DISTINCT criminal_id)
-FROM <SUBQUERY LISTED ABOVE>
-
--- 2 MODES OF OFFICER SEARCH and 2 Types of officers --> redirects to search result page
-SELECT officer.officer_name, officer.probation_status officer.badge_number,  officer.activity_status
-FROM officer
-WHERE officer.badge_number LIKE <ID> AND officer.type LIKE 'probation'
-
-SELECT officer.officer_name, officer.probation_status officer.badge_number,  officer.activity_status
-FROM officer
-WHERE officer.badge_number LIKE <ID> AND officer.type LIKE 'arresting'
-
-SELECT officer.officer_name, officer.probation_status officer.badge_number,  officer.activity_status
-FROM officer
-WHERE officer.first_name LIKE <FIRST_NAME> AND officer.last_name LIKE <LAST_NAME> AND officer.type LIKE 'probation'
-
-SELECT officer.officer_name, officer.probation_status officer.badge_number,  officer.activity_status
-FROM officer
-WHERE officer.first_name LIKE <FIRST_NAME> AND officer.last_name LIKE <LAST_NAME> AND officer.type LIKE 'arresting'
-
-
--- Display info for all types of crimes
-SELECT crime.crime_code, crime.classification, crime.crime_description
-FROM crime
-
-
--- Inmate Details Public Access
--- Inmate Details
-SELECT criminal.name, criminal.criminal_id, criminal.alias, criminal.probation_status, criminal.violent_offender_stat, officer.officer_name
-FROM criminal INNER JOIN arrest ON criminal.criminal_id = arrest.criminal_id
-INNER JOIN officer ON arrest.badge_number = officer.badge_number
-WHERE criminal.crimimal_id = <INPUT>
-
--- Crime cases
-SELECT crime.crime_code, crime.classification, charge.date_charged, crime_case.appeal_status, hearing.hearing_date, appeal.appeal_status
-FROM charge INNER JOIN criminal ON charge.criminal_id = criminal.criminal_id
-INNER JOIN hearing ON criminal.criminal_id = hearing.criminal_id
-INNER JOIN sentencing ON hearing.criminal_id = sentencing.criminal_id AND hearing.hearing_date = sentencing.hearing_date
-INNER JOIN crime_case ON sentecing.sentence_id = crime_case.sentence_id
-INNER JOIN appeal ON crime_case.appeal_id = appeal.appeal_id
-WHERE criminal_id = <INPUT>
-
--- Sentences
-SELECT sentence.sentence_id, sentence.sentence_type, sentence.starting_date, sentence.ending_date, sentence.num_violations
-FROM sentence
-WHERE sentence.criminal_id = <INPUT>
-
--- Fines and Fees
-SELECT crime_case.case_id, fine.fine_amount, fine.paid_amount, fine.payment_due_date
-FROM crime_case INNER JOIN fine ON crime.case_id = fine.case_id
-WHERE fine.criminal_id = <INPUT>
-
-
--- Inmate Details Private Access
--- Inmate Details (This is the only different part)
--- Inmate Details
-SELECT criminal.name, criminal.criminal_id, criminal.alias, criminal.probation_status, criminal.violent_offender_stat, officer.officer_name, criminal.criminal_address, criminal.criminal_phonenum
-FROM criminal INNER JOIN arrest ON criminal.criminal_id = arrest.criminal_id
-INNER JOIN officer ON arrest.badge_number = officer.badge_number
-WHERE criminal.crimimal_id = <INPUT>
-
-
--- Officer Page
--- Officer Details (same for probation/arrest)
-SELECT officer.name, officer.badge_number, officer.precinct, officer.officer_address, officer.officer_phonenum
-FROM officer
-WHERE officer.badge_number = <INPUT>
-
--- Probationaries
-SELECT criminal.name, criminal.criminal_id
-FROM criminal INNER JOIN probation ON criminal.criminal_id = probation.criminal_id
-INNER JOIN officer ON probation.badge_number = officer.badge_number
-WHERE officer.badge_number = <INPUT>
-
--- Arrests Made
-SELECT criminal.name, criminal.criminal_id, arrest.arrest_date, arrest.crime_code
-FROM criminal INNER JOIN arrest ON criminal.criminal_id = arrest.criminal_id
-INNER JOIN officer ON arrest.badge_number = officer.badge_number
-WHERE officer.badge_number = <INPUT>
-
-
-
-
--- PLSQL STATEMENTS
-
-/*
-Trigger to increase amount of criminals in the system?
-Procedure for Track/Find Inamte
-Procedure to Track/Find Officer
-Make payments
-Get appeal_num for checking if appeals are over 3 aka MAX
-Procedure to get probation/arrest officers using officer_type attribute
-
-*/
