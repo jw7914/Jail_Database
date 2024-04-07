@@ -1,3 +1,4 @@
+-- File just to build database with tables and valid entries. Mainly used for testing if entires are valid since we will be making edits
 -- CREATING TABLES
 CREATE TABLE CRIMINAL (
     criminal_id INT,

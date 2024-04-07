@@ -1,8 +1,10 @@
 FIX and make sure all entries make sense (as it is generated from CHATGPT) mainly make sure FK are pointing to the right PK of other tables ---> In proccess of fixing/adding attributes so gonna generate new entries later down the line after issues are resloved in ERD
 - New columns/attributes already added
-- 
+- Need to revaulate our PKs (mainly make PK shorter so easier to reference) we can keep FK for additional info
+- Need to make changes to SQL create table code to reflect
 
 Check over Alex's code
-
+- Comments already on file
+-
 We found many errors/things that don't make sense in wire frame / ERD so we need make minor changes to ERD so that all wire functions work as intended
-Do PL (pretty easy after ERD is fixed) ideas of what to do already generated
+Do PL SQL part (pretty easy after ERD is fixed) ideas of what to do already generated
