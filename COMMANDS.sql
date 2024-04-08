@@ -385,7 +385,7 @@ VALUES
 ('VC78901', 19, 'Homicide violation'),
 ('VC12345', 20, 'Theft violation');
 
---SQL CODE
+-- SQL CODE
 DELIMITER //
 -- SEARCHES/INFO DISPLAY (No triggers needed)
 -- 3 MODES OF CRIMINAL SEARCH --> redirects to search result page
@@ -477,11 +477,11 @@ CREATE PROCEDURE find_ao_badge(in badge_num INT, out matches INT)
 begin
     SELECT CONCAT(officer.officer_first, ' ', officer.officer_last) as officer_name, officer.officer_type, officer.activity_status
     FROM officer
-    WHERE officer.badge_number LIKE <ID> AND officer.type LIKE 'arresting';
+    WHERE officer.badge_number = badge_num AND officer.type LIKE 'arresting';
 
     SELECT COUNT(DISTINCT officer.badge_number) INTO matches
     FROM officer
-    WHERE officer.badge_number LIKE <ID> AND officer.type LIKE 'arresting';
+    WHERE officer.badge_number = badge_num AND officer.type LIKE 'arresting';
 end //
 
 DROP PROCEDURE IF EXISTS find_po_name //
