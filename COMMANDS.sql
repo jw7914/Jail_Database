@@ -455,72 +455,25 @@ SELECT crime.crime_code, crime.classification, crime.crime_description
 FROM crime
 
 -- FUNCTIONS/TRIGGERS
--- Make payments: Function AND trigger
+-- Make payments: Function
 CREATE FUNCTION make_payment(IN payment FLOAT, IN case INT) returns FLOAT DETERMINISTIC
 begin
     DECLARE amt_owed FLOAT;
 
     SET amt_owed = amt_owed + fine.fine_amount + fine.court_fee;
-    UPDATE fine SET 
+    UPDATE fine SET paid_amount = payment
     RETURN amt_owed;
 end //
 
-CREATE TRIGGER make_payment
-after UPDATE 
+CREATE FUNCTION new_appeal(IN caseId INT, IN crim_id)
+begin
+    DECLARE new_app_ID INT;
+    SET new_app_ID = SELECT COUNT(DISTINCT appeal.appeal_id);
+    IF num_appeals_remaining > 0 AND caseId IS NOT NULL then
+        UPDATE appeal SET num_appeals_remaining = num_appeals_remaining - 1
+        WHERE appeal.case_id = caseId;
 
--- Trigger to get appeal_num for checking if appeals are over 3 aka MAX
-
-
--- Inmate Details Public Access
--- Inmate Details
-SELECT criminal.name, criminal.criminal_id, criminal.alias, criminal.probation_status, criminal.violent_offender_stat, officer.officer_name
-FROM criminal INNER JOIN arrest ON criminal.criminal_id = arrest.criminal_id
-INNER JOIN officer ON arrest.badge_number = officer.badge_number
-WHERE criminal.crimimal_id = <INPUT>
-
--- Crime cases
-SELECT crime.crime_code, crime.classification, charge.date_charged, crime_case.appeal_status, hearing.hearing_date, appeal.appeal_status
-FROM charge INNER JOIN criminal ON charge.criminal_id = criminal.criminal_id
-INNER JOIN hearing ON criminal.criminal_id = hearing.criminal_id
-INNER JOIN sentencing ON hearing.criminal_id = sentencing.criminal_id AND hearing.hearing_date = sentencing.hearing_date
-INNER JOIN crime_case ON sentecing.sentence_id = crime_case.sentence_id
-INNER JOIN appeal ON crime_case.appeal_id = appeal.appeal_id
-WHERE criminal_id = <INPUT>
-
--- Sentences
-SELECT sentence.sentence_id, sentence.sentence_type, sentence.starting_date, sentence.ending_date, sentence.num_violations
-FROM sentence
-WHERE sentence.criminal_id = <INPUT>
-
--- Fines and Fees
-SELECT crime_case.case_id, fine.fine_amount, fine.paid_amount, fine.payment_due_date
-FROM crime_case INNER JOIN fine ON crime.case_id = fine.case_id
-WHERE fine.criminal_id = <INPUT>
-
-
--- Inmate Details Private Access
--- Inmate Details (This is the only different part)
--- Inmate Details
-SELECT criminal.name, criminal.criminal_id, criminal.alias, criminal.probation_status, criminal.violent_offender_stat, officer.officer_name, criminal.criminal_address, criminal.criminal_phonenum
-FROM criminal INNER JOIN arrest ON criminal.criminal_id = arrest.criminal_id
-INNER JOIN officer ON arrest.badge_number = officer.badge_number
-WHERE criminal.crimimal_id = <INPUT>
-
-
--- Officer Page
--- Officer Details (same for probation/arrest)
-SELECT officer.name, officer.badge_number, officer.precinct, officer.officer_address, officer.officer_phonenum
-FROM officer
-WHERE officer.badge_number = <INPUT>
-
--- Probationaries
-SELECT criminal.name, criminal.criminal_id
-FROM criminal INNER JOIN probation ON criminal.criminal_id = probation.criminal_id
-INNER JOIN officer ON probation.badge_number = officer.badge_number
-WHERE officer.badge_number = <INPUT>
-
--- Arrests Made
-SELECT criminal.name, criminal.criminal_id, arrest.arrest_date, arrest.crime_code
-FROM criminal INNER JOIN arrest ON criminal.criminal_id = arrest.criminal_id
-INNER JOIN officer ON arrest.badge_number = officer.badge_number
-WHERE officer.badge_number = <INPUT>
+        SET new_app_ID = new_app_ID + 1;
+        INSERT INTO appeal VALUES(new_app_ID, crim_id, caseId, num_appeals_remaining);
+    END IF;
+end //
