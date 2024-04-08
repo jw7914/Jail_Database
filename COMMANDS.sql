@@ -460,8 +460,13 @@ CREATE FUNCTION make_payment(IN payment FLOAT, IN case INT) returns FLOAT DETERM
 begin
     DECLARE amt_owed FLOAT;
 
-    SET 
-    SELECT 
+    SET amt_owed = amt_owed + fine.fine_amount + fine.court_fee;
+    UPDATE fine SET 
+    RETURN amt_owed;
+end //
+
+CREATE TRIGGER make_payment
+after UPDATE 
 
 -- Trigger to get appeal_num for checking if appeals are over 3 aka MAX
 
