@@ -329,6 +329,7 @@ VALUES
 
 --SQL CODE
 DELIMITER //
+-- SEARCHES/INFO DISPLAY (No triggers needed)
 -- 3 MODES OF CRIMINAL SEARCH --> redirects to search result page
 DROP PROCEDURE IF EXISTS find_inmate_alias //
 CREATE PROCEDURE find_inmate_alias(in alias VARCHAR(50), out matches INT)
@@ -404,7 +405,7 @@ end //
 DROP PROCEDURE IF EXISTS find_po_badge //
 CREATE PROCEDURE find_po_badge(in badge_num INT, out matches INT)
 begin
-    SELECT CONCAT(officer.officer_first, ' ', officer.officer_last) as officer_name, officer.probation_status officer.badge_number, officer.activity_status
+    SELECT CONCAT(officer.officer_first, ' ', officer.officer_last) as officer_name, officer.officer_type, officer.activity_status
     FROM officer
     WHERE officer.badge_number = badge_num AND officer.type LIKE 'probation';
 
@@ -416,7 +417,7 @@ end //
 DROP PROCEDURE IF EXISTS find_ao_badge //
 CREATE PROCEDURE find_ao_badge(in badge_num INT, out matches INT)
 begin
-    SELECT CONCAT(officer.officer_first, ' ', officer.officer_last) as officer_name, officer.probation_status officer.badge_number, officer.activity_status
+    SELECT CONCAT(officer.officer_first, ' ', officer.officer_last) as officer_name, officer.officer_type, officer.activity_status
     FROM officer
     WHERE officer.badge_number LIKE <ID> AND officer.type LIKE 'arresting';
 
@@ -428,7 +429,7 @@ end //
 DROP PROCEDURE IF EXISTS find_po_name //
 CREATE PROCEDURE find_po_name(in first VARCHAR(20), in last VARCHAR(20), out matches INT)
 begin
-    SELECT CONCAT(officer.officer_first, ' ', officer.officer_last) as officer_name, officer.probation_status officer.badge_number, officer.activity_status
+    SELECT CONCAT(officer.officer_first, ' ', officer.officer_last) as officer_name, officer.officer_type, officer.activity_status
     FROM officer
     WHERE officer.officer_first LIKE first AND officer.officer_last LIKE last AND officer.type LIKE 'probation';
 
@@ -440,7 +441,7 @@ end //
 DROP PROCEDURE IF EXISTS find_po_name //
 CREATE PROCEDURE find_po_name(in first VARCHAR(20), in last VARCHAR(20), out matches INT)
 begin
-    SELECT CONCAT(officer.officer_first, ' ', officer.officer_last) as officer_name, officer.probation_status officer.badge_number, officer.activity_status
+    SELECT CONCAT(officer.officer_first, ' ', officer.officer_last) as officer_name, officer.officer_type, officer.activity_status
     FROM officer
     WHERE officer.officer_first LIKE first AND officer.officer_last LIKE last AND officer.type LIKE 'arresting';
 
@@ -452,6 +453,17 @@ end //
 -- Display info for all types of crimes
 SELECT crime.crime_code, crime.classification, crime.crime_description
 FROM crime
+
+-- FUNCTIONS/TRIGGERS
+-- Make payments: Function AND trigger
+CREATE FUNCTION make_payment(IN payment FLOAT, IN case INT) returns FLOAT DETERMINISTIC
+begin
+    DECLARE amt_owed FLOAT;
+
+    SET 
+    SELECT 
+
+-- Trigger to get appeal_num for checking if appeals are over 3 aka MAX
 
 
 -- Inmate Details Public Access
@@ -507,20 +519,3 @@ SELECT criminal.name, criminal.criminal_id, arrest.arrest_date, arrest.crime_cod
 FROM criminal INNER JOIN arrest ON criminal.criminal_id = arrest.criminal_id
 INNER JOIN officer ON arrest.badge_number = officer.badge_number
 WHERE officer.badge_number = <INPUT>
-
-
-
--- PLSQL STATEMENTS
-DELIMITER //
--- Procedure for Track/Find Inmate
-
-
--- Procedure to Track/Find Officer
-CREATE PROCEDURE find_officer()
-
--- Procedure to get probation/arrest officers using officer_type attribute
-CREATE PROCEDURE show_officer_type()
--- Function to show number of criminals shown
--- Make payments: Function AND trigger
--- Trigger to Get appeal_num for checking if appeals are over 3 aka MAX
--- Procedure to get probation/arrest officers using officer_type attribute
