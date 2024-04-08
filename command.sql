@@ -168,6 +168,25 @@ VALUES
 (14, 14, 14, 1, '2024-03-30', '2024-05-15', 'Pending'),
 (15, 15, 15, 1, '2024-04-05', '2024-06-20', 'Granted');
 
+-- CRIME_CASE table entries
+INSERT INTO CRIME_CASE (case_id, appeal_id, date_charged, sentence_id, criminal_id, num_appeal, charge_status)
+VALUES
+(1, 1, '2023-01-15', 1, 1, 0, 'Pending'),
+(2, 2, '2023-02-20', 2, 2, 2, 'Closed'),
+(3, 3, '2023-03-25', 3, 3, 0, 'Open'),
+(4, 4, '2023-04-30', 4, 4, 2, 'Closed'),
+(5, 5, '2023-05-05', 5, 5, 0, 'Pending'),
+(6, 6, '2023-06-10', 6, 6, 1, 'Closed'),
+(7, 7, '2023-07-15', 7, 7, 0, 'Open'),
+(8, 8, '2023-08-20', 8, 8, 0, 'Closed'),
+(9, 9, '2023-09-25', 9, 9, 0, 'Open'),
+(10, 10, '2023-10-30', 10, 10, 3, 'Closed'),
+(11, 11, '2023-11-05', 11, 11, 1, 'Pending'),
+(12, 12, '2023-12-10', 12, 12, 0, 'Closed'),
+(13, 13, '2024-01-15', 13, 13, 2, 'Open'),
+(14, 14, '2024-02-20', 14, 14, 0, 'Closed'),
+(15, 15, '2024-03-25', 15, 15, 0, 'Pending');
+
 -- FINE table entries
 INSERT INTO FINE (case_id, criminal_id, fine_amount, court_fee, paid_amount, payment_due_date)
 VALUES
@@ -244,6 +263,7 @@ VALUES
 (14, 1014, 14),
 (15, 1015, 15);
 
+-- CRIME table entries
 INSERT INTO CRIME (crime_code, classification, crime_description) 
 VALUES 
 ('CC12345', 'Felony', 'Theft'),
@@ -269,7 +289,7 @@ VALUES
 ('CC11227', 'Felony', 'Money Laundering'),
 ('CC29334', 'Misdemeanor', 'Simple Assault'),
 ('CC33465', 'Felony', 'Embezzlement'),
-('CC44556', 'Misdemeanor', 'Harassment');
+('CC44556', 'Misdemeanor', 'Harassment'),
 ('CC42556', 'Misdemeanor', 'Battery');
 
 -- HEARING table entries

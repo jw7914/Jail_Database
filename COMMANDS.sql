@@ -114,7 +114,6 @@ CREATE TABLE VIOLATION (
 -- INSERT STATEMENTS
 -- CRIMINAL table entries
 INSERT INTO CRIMINAL (criminal_id, criminal_first, criminal_last, criminal_address, criminal_phonenum, violent_offender_stat, probation_status, alias)
-VALUES 
 (1, 'John', 'Doe', '123 Main St, City, USA', '123-123-4567', FALSE, TRUE, 'JD'),
 (2, 'Alice', 'Smith', '456 Elm St, Town, USA', '531-987-6543', TRUE, FALSE, 'AS'),
 (3, 'Michael', 'Johnson', '789 Oak St, Village, USA', '541-111-2222', TRUE, TRUE, 'MJ'),
@@ -137,7 +136,7 @@ VALUES
 (20, 'Natalie', 'King', '808 Cedar St, Town, USA', '888-333-4444', TRUE, FALSE, 'NK');
 
 -- CHARGE table entries
-INSERT INTO CHARGE (date_charged, criminal_id, crime_code) 
+INSERT INTO CHARGE (date_charged, criminal_id, crime_code) --
 VALUES 
 ('2023-01-15', 1, 'CC12345'),
 ('2023-02-20', 2, 'CC23456'),
@@ -384,7 +383,6 @@ VALUES
 ('VC90123', 18, 'Kidnapping violation'),
 ('VC78901', 19, 'Homicide violation'),
 ('VC12345', 20, 'Theft violation');
-
 -- SQL CODE
 DELIMITER //
 -- SEARCHES/INFO DISPLAY (No triggers needed)

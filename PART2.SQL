@@ -1,5 +1,5 @@
 CREATE TABLE CRIMINAL (
-    criminal_id INT,
+    criminal_id INT NOT NULL,
     criminal_name VARCHAR(40),
     criminal_address VARCHAR(150),
     criminal_phonenum VARCHAR(12), 
@@ -18,7 +18,7 @@ CREATE TABLE CHARGE (
 );
 
 CREATE TABLE CRIME (
-    crime_code CHAR(10),
+    crime_code CHAR(10) NOT NULL,
     classification VARCHAR(40),
     PRIMARY KEY(crime_code, classification)
 );
