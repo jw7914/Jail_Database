@@ -326,34 +326,57 @@ VALUES
 ('VC33445', 13, 'Probation violation'),
 ('VC44556', 14, 'Probation violation'),
 ('VC55667', 15, 'Probation violation');
+
 --SQL CODE
-
+DELIMITER //
 -- 3 MODES OF CRIMINAL SEARCH --> redirects to search result page
-CREATE PROCEDURE find_inmate_FN(in first VARCHAR(20))
+DROP PROCEDURE IF EXISTS find_inmate_alias //
+CREATE PROCEDURE find_inmate_alias(in alias VARCHAR(50))
 begin
     SELECT criminal.criminal_first, criminal.criminal_last, criminal.alias, criminal.criminal_id, criminal.probation_status, sentencing.ending_date as release_date, hearing.hearing_date as next_hearing
     FROM criminal INNER JOIN hearing ON criminal.criminal_id = hearing.criminal_id
     INNER JOIN sentencing ON hearing.hearing_date = sentencing.hearing_date
-    WHERE criminal.alias LIKE <ALIAS>;
+    WHERE criminal.alias LIKE alias;
 end //
 
-CREATE PROCEDURE find_inmate_FN(in first VARCHAR(20))
+DROP PROCEDURE IF EXISTS find_inmate_alias //
+CREATE PROCEDURE find_inmate_fullname(in first VARCHAR(20), in last VARCHAR(20))
 begin
     SELECT criminal.criminal_first, criminal.criminal_last, criminal.alias, criminal.criminal_id, criminal.probation_status, sentencing.ending_date as release_date, hearing.hearing_date as next_hearing
     FROM criminal INNER JOIN hearing ON criminal.criminal_id = hearing.criminal_id
     INNER JOIN sentencing ON hearing.hearing_date = sentencing.hearing_date
-    WHERE criminal.first_name LIKE <FIRST NAME> AND criminal.last_name LIKE <LAST NAME>
+    WHERE criminal.first_name LIKE first AND criminal.last_name LIKE last;
 end //
 
-CREATE PROCEDURE find_inmate_FN(in first VARCHAR(20))
+DROP PROCEDURE IF EXISTS find_inmate_alias //
+CREATE PROCEDURE find_inmate_firstname(in first VARCHAR(20))
 begin
     SELECT criminal.criminal_first, criminal.criminal_last, criminal.alias, criminal.criminal_id, criminal.probation_status, sentencing.ending_date as release_date, hearing.hearing_date as next_hearing
     FROM criminal INNER JOIN hearing ON criminal.criminal_id = hearing.criminal_id
     INNER JOIN sentencing ON hearing.hearing_date = sentencing.hearing_date
-    WHERE hearing.case_id LIKE <CASE NUMBER>
+    WHERE criminal.first_name LIKE first;
+end //
+
+DROP PROCEDURE IF EXISTS find_inmate_alias //
+CREATE PROCEDURE find_inmate_lastname(in last VARCHAR(20))
+begin
+    SELECT criminal.criminal_first, criminal.criminal_last, criminal.alias, criminal.criminal_id, criminal.probation_status, sentencing.ending_date as release_date, hearing.hearing_date as next_hearing
+    FROM criminal INNER JOIN hearing ON criminal.criminal_id = hearing.criminal_id
+    INNER JOIN sentencing ON hearing.hearing_date = sentencing.hearing_date
+    WHERE criminal.last_name LIKE last;
+end //
+
+DROP PROCEDURE IF EXISTS find_inmate_alias //
+CREATE PROCEDURE find_inmate_casenum(in case_id INT)
+begin
+    SELECT criminal.criminal_first, criminal.criminal_last, criminal.alias, criminal.criminal_id, criminal.probation_status, sentencing.ending_date as release_date, hearing.hearing_date as next_hearing
+    FROM criminal INNER JOIN hearing ON criminal.criminal_id = hearing.criminal_id
+    INNER JOIN sentencing ON hearing.hearing_date = sentencing.hearing_date
+    WHERE hearing.case_id LIKE case_id;
 end //
 
 -- To get the number of matching results, we simply do:
+CREATE TRIGGER 
 SELECT COUNT(DISTINCT criminal_id)
 FROM <SUBQUERY LISTED ABOVE>
 
