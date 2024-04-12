@@ -113,7 +113,7 @@ CREATE TABLE VIOLATION (
 
 -- INSERT STATEMENTS
 -- CRIMINAL table entries
-INSERT INTO CRIMINAL (criminal_id, criminal_first, criminal_last, criminal_address, criminal_phonenum, violent_offender_stat, probation_status, alias) --
+INSERT INTO CRIMINAL (criminal_id, criminal_first, criminal_last, criminal_address, criminal_phonenum, violent_offender_stat, probation_status, alias)
 VALUES 
 (1, 'John', 'Doe', '123 Main St, City, USA', '123-123-4567', FALSE, TRUE, 'JD'),
 (2, 'Alice', 'Smith', '456 Elm St, Town, USA', '531-987-6543', TRUE, FALSE, 'AS'),
@@ -132,12 +132,12 @@ VALUES
 (15, 'Joshua', 'Taylor', '212 Pine St, Village, USA', '778-444-5555', TRUE, FALSE, 'JT'),
 (16, 'Rachel', 'Clark', '404 Chestnut St, City, USA', '555-123-4567', FALSE, TRUE, 'RC'),
 (17, 'Brian', 'Young', '505 Walnut St, Town, USA', '575-987-6543', TRUE, FALSE, 'BY'),
-(18, 'Olivia', 'Hall', '606 Pine St, Village, USA', '666-111-2222', TRUE, FLASE, 'OH'),
+(18, 'Olivia', 'Hall', '606 Pine St, Village, USA', '666-111-2222', TRUE, FALSE, 'OH'),
 (19, 'Steven', 'Wright', '707 Oak St, City, USA', '999-222-3333', FALSE, FALSE, 'SW'),
-(20, 'Natalie', 'King', '808 Cedar St, Town, USA', '888-333-4444', TRUE, FLASE, 'NK');
+(20, 'Natalie', 'King', '808 Cedar St, Town, USA', '888-333-4444', TRUE, FALSE, 'NK');
 
 -- CHARGE table entries
-INSERT INTO CHARGE (date_charged, criminal_id, crime_code) --
+INSERT INTO CHARGE (date_charged, criminal_id, crime_code) 
 VALUES 
 ('2023-01-15', 1, 'CC12345'),
 ('2023-02-20', 2, 'CC23456'),
@@ -161,7 +161,7 @@ VALUES
 ('2024-04-05', 20, 'CC22334');
 
 -- APPEAL table entries
-INSERT INTO APPEAL (appeal_id, criminal_id, case_id, num_appeal_remaining, appeal_file_date, appeal_hearing_date, appeal_status) --
+INSERT INTO APPEAL (appeal_id, criminal_id, case_id, num_appeal_remaining, appeal_file_date, appeal_hearing_date, appeal_status) 
 VALUES
 (1, 1, 1, 0, '2023-02-01', '2023-04-15', 'Pending'),
 (2, 2, 2, 2, '2023-03-10', '2023-05-20', 'Granted'),
@@ -179,13 +179,13 @@ VALUES
 (14, 14, 14, 0, '2024-03-30', '2024-05-15', 'Pending'),
 (15, 15, 15, 0, '2024-04-05', '2024-06-20', 'Granted'),
 (16, 16, 16, 3, '2024-07-05', '2024-09-20', 'Pending'),
-(17, 17, 17  2, '2024-06-03', '2024-08-20', 'Pending'),
+(17, 17, 17, 2, '2024-06-03', '2024-08-20', 'Pending'),
 (18, 18, 18, 0, '2024-04-11', '2024-06-30', 'Pending'),
 (19, 19, 19, 3, '2024-04-13', '2024-06-23', 'Pending'),
 (20, 20, 20, 3, '2024-05-05', '2024-07-20', 'Pending');
 
 -- CRIME_CASE table entries
-INSERT INTO CRIME_CASE (case_id, appeal_id, date_charged, sentence_id, criminal_id, num_appeal_remaining, charge_status) --
+INSERT INTO CRIME_CASE (case_id, appeal_id, date_charged, sentence_id, criminal_id, num_appeal_remaining, charge_status) 
 VALUES
 (1, 1, '2023-01-15', 1, 1, 0, 'Pending'),
 (2, 2, '2023-02-20', 2, 2, 2, 'Closed'),
@@ -209,7 +209,7 @@ VALUES
 (20, 20, '2024-04-05', 20, 20, 3, 'Open');
 
 -- FINE table entries
-INSERT INTO FINE (case_id, criminal_id, fine_amount, court_fee, paid_amount, payment_due_date) --
+INSERT INTO FINE (case_id, criminal_id, fine_amount, court_fee, paid_amount, payment_due_date) 
 VALUES
 (1, 1, 1500.00, 200.00, 0.00, '2023-03-01'),
 (2, 2, 1000.00, 150.00, 250.00, '2023-04-01'),
@@ -233,7 +233,7 @@ VALUES
 (20, 20, 2800.00, 250.00, 0.00, '2024-04-22');
 
 -- OFFICER table entries
-INSERT INTO OFFICER (badge_number, office_first, officer_last, precinct, officer_phonenum, activity_status, officer_type, officer_address) --
+INSERT INTO OFFICER (badge_number, office_first, officer_last, precinct, officer_phonenum, activity_status, officer_type, officer_address) 
 VALUES
 (1001, 'Michael', 'Brown', 'Precinct 1', '565-111-2232', 'Active', 'Arrest', '123 Elm St, City, USA'),
 (1002, 'Jennifer', 'Davis', 'Precinct 2', '998-222-3333', 'Active', 'Arrest', '456 Oak St, Town, USA'),
@@ -257,7 +257,7 @@ VALUES
 (1020, 'Rielle', 'Lim', 'Precinct 10', '444-555-6666', 'Active', 'Arrest', '020 Pine St, Town, USA');
 
 -- ARREST table entries
-INSERT INTO ARREST (criminal_id, badge_number, crime_code, arrest_date) --
+INSERT INTO ARREST (criminal_id, badge_number, crime_code, arrest_date) 
 VALUES
 (2, 1001, 'CC12345', '2023-01-15'),
 (4, 1002, 'CC23456', '2023-02-20'),
@@ -271,7 +271,7 @@ VALUES
 (20, 1020, 'CC01234', '2023-10-30');
 
 -- PROBATION table entries
-INSERT INTO PROBATION (criminal_id, badge_number, case_id) --
+INSERT INTO PROBATION (criminal_id, badge_number, case_id) 
 VALUES
 (1, 1004, 1),
 (3, 1005, 2),
@@ -285,7 +285,7 @@ VALUES
 (16, 1015, 10);
 
 -- CRIME table entries
-INSERT INTO CRIME (crime_code, classification, crime_description) --
+INSERT INTO CRIME (crime_code, classification, crime_description) 
 VALUES 
 ('CC12345', 'Felony', 'Theft'),
 ('CC23456', 'Misdemeanor', 'Assault'),
@@ -314,7 +314,7 @@ VALUES
 ('CC42556', 'Misdemeanor', 'Battery');
 
 -- HEARING table entries
-INSERT INTO HEARING (criminal_id, case_id, hearing_date, date_charged) --
+INSERT INTO HEARING (criminal_id, case_id, hearing_date, date_charged) 
 VALUES
 (1, 1, '2023-03-01', '2023-01-15'),
 (2, 2, '2023-04-05', '2023-02-20'),
@@ -335,7 +335,7 @@ VALUES
 (17, 17, '2024-06-16', '2024-04-02'),
 (18, 18, '2024-06-17', '2024-04-03'),
 (19, 19, '2024-06-18', '2024-04-04'),
-(20, 20, '2024-06-19', '2024-04-05'),
+(20, 20, '2024-06-19', '2024-04-05');
 
 -- SENTENCING table entries
 INSERT INTO SENTENCING (criminal_id, violation_code, hearing_date, sentence_id, starting_date, end_date, num_violations, sentence_type)
@@ -362,7 +362,7 @@ VALUES
 (20, 'VC12345', '2024-06-19', 20, '2024-06-19', '2024-10-16', 1, 'Community Service');
 
 -- VIOLATION table entries
-INSERT INTO VIOLATION (violation_code, criminal_id, violation_description) --
+INSERT INTO VIOLATION (violation_code, criminal_id, violation_description) 
 VALUES
 ('VC12345', 1, 'Theft violation'),
 ('VC23456', 2, 'Assault violation'),
@@ -384,3 +384,168 @@ VALUES
 ('VC90123', 18, 'Kidnapping violation'),
 ('VC78901', 19, 'Homicide violation'),
 ('VC12345', 20, 'Theft violation');
+
+-- SQL CODE
+DELIMITER //
+-- SEARCHES/INFO DISPLAY (No triggers needed)
+-- 3 MODES OF CRIMINAL SEARCH --> redirects to search result page
+DROP PROCEDURE IF EXISTS find_inmate_alias //
+CREATE PROCEDURE find_inmate_alias(in alias VARCHAR(50), out matches INT)
+begin
+    SELECT criminal.criminal_first, criminal.criminal_last, criminal.alias, criminal.criminal_id, criminal.probation_status, sentencing.ending_date as release_date, hearing.hearing_date as next_hearing
+    FROM criminal INNER JOIN hearing ON criminal.criminal_id = hearing.criminal_id
+    INNER JOIN sentencing ON hearing.hearing_date = sentencing.hearing_date
+    WHERE criminal.alias LIKE alias;
+
+    SELECT COUNT(DISTINCT criminal.criminal_id) INTO matches
+    FROM criminal INNER JOIN hearing ON criminal.criminal_id = hearing.criminal_id
+    INNER JOIN sentencing ON hearing.hearing_date = sentencing.hearing_date
+    WHERE criminal.alias LIKE alias;
+end //
+
+DROP PROCEDURE IF EXISTS find_inmate_fullname //
+CREATE PROCEDURE find_inmate_fullname(in first VARCHAR(20), in last VARCHAR(20), out matches INT)
+begin
+    SELECT criminal.criminal_first, criminal.criminal_last, criminal.alias, criminal.criminal_id, criminal.probation_status, sentencing.ending_date as release_date, hearing.hearing_date as next_hearing
+    FROM criminal INNER JOIN hearing ON criminal.criminal_id = hearing.criminal_id
+    INNER JOIN sentencing ON hearing.hearing_date = sentencing.hearing_date
+    WHERE criminal.first_name LIKE first AND criminal.last_name LIKE last;
+
+    SELECT COUNT(DISTINCT criminal.criminal_id) INTO matches
+    FROM criminal INNER JOIN hearing ON criminal.criminal_id = hearing.criminal_id
+    INNER JOIN sentencing ON hearing.hearing_date = sentencing.hearing_date
+    WHERE criminal.first_name LIKE first AND criminal.last_name LIKE last;
+end //
+
+DROP PROCEDURE IF EXISTS find_inmate_firstname //
+CREATE PROCEDURE find_inmate_firstname(in first VARCHAR(20), out matches INT)
+begin
+    SELECT criminal.criminal_first, criminal.criminal_last, criminal.alias, criminal.criminal_id, criminal.probation_status, sentencing.ending_date as release_date, hearing.hearing_date as next_hearing
+    FROM criminal INNER JOIN hearing ON criminal.criminal_id = hearing.criminal_id
+    INNER JOIN sentencing ON hearing.hearing_date = sentencing.hearing_date
+    WHERE criminal.first_name LIKE first;
+
+    SELECT COUNT(DISTINCT criminal.criminal_id) INTO matches
+    FROM criminal INNER JOIN hearing ON criminal.criminal_id = hearing.criminal_id
+    INNER JOIN sentencing ON hearing.hearing_date = sentencing.hearing_date
+    WHERE criminal.first_name LIKE first;
+end //
+
+DROP PROCEDURE IF EXISTS find_inmate_lastname //
+CREATE PROCEDURE find_inmate_lastname(in last VARCHAR(20), out matches INT)
+begin
+    SELECT criminal.criminal_first, criminal.criminal_last, criminal.alias, criminal.criminal_id, criminal.probation_status, sentencing.ending_date as release_date, hearing.hearing_date as next_hearing
+    FROM criminal INNER JOIN hearing ON criminal.criminal_id = hearing.criminal_id
+    INNER JOIN sentencing ON hearing.hearing_date = sentencing.hearing_date
+    WHERE criminal.last_name LIKE last;
+
+    SELECT COUNT(DISTINCT criminal.criminal_id) INTO matches
+    FROM criminal INNER JOIN hearing ON criminal.criminal_id = hearing.criminal_id
+    INNER JOIN sentencing ON hearing.hearing_date = sentencing.hearing_date
+    WHERE criminal.last_name LIKE last;
+end //
+
+DROP PROCEDURE IF EXISTS find_inmate_casenum //
+CREATE PROCEDURE find_inmate_casenum(in case_id INT, out matches INT)
+begin
+    SELECT criminal.criminal_first, criminal.criminal_last, criminal.alias, criminal.criminal_id, criminal.probation_status, sentencing.ending_date as release_date, hearing.hearing_date as next_hearing
+    FROM criminal INNER JOIN hearing ON criminal.criminal_id = hearing.criminal_id
+    INNER JOIN sentencing ON hearing.hearing_date = sentencing.hearing_date
+    WHERE hearing.case_id LIKE case_id;
+
+    SELECT COUNT(DISTINCT criminal.criminal_id) INTO matches
+    FROM criminal INNER JOIN hearing ON criminal.criminal_id = hearing.criminal_id
+    INNER JOIN sentencing ON hearing.hearing_date = sentencing.hearing_date
+    WHERE hearing.case_id LIKE case_id;
+end //
+
+-- 2 MODES OF OFFICER SEARCH and 2 Types of officers --> redirects to search result page
+DROP PROCEDURE IF EXISTS find_po_badge //
+CREATE PROCEDURE find_po_badge(in badge_num INT, out matches INT)
+begin
+    SELECT CONCAT(officer.officer_first, ' ', officer.officer_last) as officer_name, officer.officer_type, officer.activity_status
+    FROM officer
+    WHERE officer.badge_number = badge_num AND officer.type LIKE 'probation';
+
+    SELECT COUNT(DISTINCT officer.badge_number) INTO matches
+    FROM officer
+    WHERE officer.badge_number = badge_num AND officer.type LIKE 'probation';
+end //
+
+DROP PROCEDURE IF EXISTS find_ao_badge //
+CREATE PROCEDURE find_ao_badge(in badge_num INT, out matches INT)
+begin
+    SELECT CONCAT(officer.officer_first, ' ', officer.officer_last) as officer_name, officer.officer_type, officer.activity_status
+    FROM officer
+<<<<<<< HEAD:COMMANDS.sql
+    WHERE officer.badge_number = badge_num AND officer.type LIKE 'arresting';
+
+    SELECT COUNT(DISTINCT officer.badge_number) INTO matches
+    FROM officer
+    WHERE officer.badge_number = badge_num AND officer.type LIKE 'arresting';
+=======
+    WHERE officer.badge_number LIKE <ID> AND officer.type LIKE 'arresting';
+
+    SELECT COUNT(DISTINCT officer.badge_number) INTO matches
+    FROM officer
+    WHERE officer.badge_number LIKE <ID> AND officer.type LIKE 'arresting';
+>>>>>>> bb70648 (all project stuff upload):Milestone_3/COMMANDS.sql
+end //
+
+DROP PROCEDURE IF EXISTS find_po_name //
+CREATE PROCEDURE find_po_name(in first VARCHAR(20), in last VARCHAR(20), out matches INT)
+begin
+    SELECT CONCAT(officer.officer_first, ' ', officer.officer_last) as officer_name, officer.officer_type, officer.activity_status
+    FROM officer
+    WHERE officer.officer_first LIKE first AND officer.officer_last LIKE last AND officer.type LIKE 'probation';
+
+    SELECT COUNT(DISTINCT officer.badge_number) INTO matches
+    FROM officer
+    WHERE officer.officer_first LIKE first AND officer.officer_last LIKE last AND officer.type LIKE 'probation';
+end //
+
+DROP PROCEDURE IF EXISTS find_po_name //
+CREATE PROCEDURE find_po_name(in first VARCHAR(20), in last VARCHAR(20), out matches INT)
+begin
+    SELECT CONCAT(officer.officer_first, ' ', officer.officer_last) as officer_name, officer.officer_type, officer.activity_status
+    FROM officer
+    WHERE officer.officer_first LIKE first AND officer.officer_last LIKE last AND officer.type LIKE 'arresting';
+
+    SELECT COUNT(DISTINCT officer.badge_number) INTO matches
+    FROM officer
+    WHERE officer.officer_first LIKE first AND officer.officer_last LIKE last AND officer.type LIKE 'arresting';
+end //
+
+-- Display info for all types of crimes
+SELECT crime.crime_code, crime.classification, crime.crime_description
+FROM crime
+
+-- FUNCTIONS/TRIGGERS
+-- Make payments: Function
+CREATE FUNCTION make_payment(IN payment FLOAT, IN case INT) returns FLOAT DETERMINISTIC
+begin
+    DECLARE amt_owed FLOAT;
+
+    SET amt_owed = amt_owed + fine.fine_amount + fine.court_fee;
+    UPDATE fine SET paid_amount = payment
+    RETURN amt_owed;
+end //
+
+CREATE FUNCTION new_appeal(IN caseId INT, IN crim_id)
+begin
+    DECLARE new_app_ID INT;
+    SET new_app_ID = SELECT COUNT(DISTINCT appeal.appeal_id);
+    IF num_appeals_remaining > 0 AND caseId IS NOT NULL then
+        UPDATE appeal SET num_appeals_remaining = num_appeals_remaining - 1
+        WHERE appeal.case_id = caseId;
+
+        SET new_app_ID = new_app_ID + 1;
+        INSERT INTO appeal VALUES(new_app_ID, crim_id, caseId, num_appeals_remaining);
+    END IF;
+<<<<<<< HEAD:COMMANDS.sql
+end //
+=======
+end //
+
+DELIMITER ;
+>>>>>>> bb70648 (all project stuff upload):Milestone_3/COMMANDS.sql
