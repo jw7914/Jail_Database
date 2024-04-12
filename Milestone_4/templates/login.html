@@ -15,32 +15,85 @@
         </ul>
     </nav>
     <div class="main">
-        <h1>Query Slaying Jail <br> Government Login</h1>
-        <h3>Enter your login credentials</h3>
-        <form action="">
-            <label for="first">
-                  Username:
-              </label>
-            <input type="text"
-                   id="first"
-                   name="first"
-                   placeholder="Enter your Username" required>
- 
-            <label for="password">
-                  Password:
-              </label>
-            <input type="password"
-                   id="password"
-                   name="password"
-                   placeholder="Enter your Password" required>
- 
-            <div class="wrap">
-                <button type="submit"
-                        onclick="solve()">
-                    Submit
-                </button>
-            </div>
-        </form>
+        <div class="main-query">
+            <h1>Search Bar</h1>
+            <h3>Query by Case, Name, or Alias!</h3>
+            <form action="">
+                <div>
+
+                </div>
+                <div class="full-width-input">
+                    <label for="case-num">
+                        Case Number:
+                    </label>
+                  <input type="number"
+                         id="case-num"
+                         name="case-num"
+                         placeholder="Enter case number" required>
+                </div>
+                <div style="float: left; width: 47.5%">
+                    <label for="first-name">
+                        First Name:
+                    </label>
+                  <input type="text"
+                         id="first-name"
+                         name="first-name"
+                         placeholder="First name" required>
+                </div>
+                <div style="float: right; width: 47.5%">
+                    <label for="last-name">
+                        Last Name:
+                    </label>
+                  <input type="text"
+                         id="last-name"
+                         name="last-name"
+                         placeholder="Last name" required>
+                </div>
+                <div class="full-width-input">
+                    <label for="alias">
+                        Alias:
+                    </label>
+                  <input type="alias"
+                         id="alias"
+                         name="alias"
+                         placeholder="Enter alias" required>
+                </div>
+                <div class="wrap">
+                    <button type="submit"
+                            onclick="solve()">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="govt-login">
+            <h1>Government Login</h1>
+            <h3>Enter your login credentials</h3>
+            <form action="">
+                <label for="first">
+                      Username:
+                  </label>
+                <input type="text"
+                       id="first"
+                       name="first"
+                       placeholder="Enter your Username" required>
+
+                <label for="password">
+                      Password:
+                  </label>
+                <input type="password"
+                       id="password"
+                       name="password"
+                       placeholder="Enter your Password" required>
+
+                <div class="wrap">
+                    <button type="submit"
+                            onclick="solve()">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </body>
 </html>
