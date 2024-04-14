@@ -477,19 +477,11 @@ CREATE PROCEDURE find_ao_badge(in badge_num INT, out matches INT)
 begin
     SELECT CONCAT(officer.officer_first, ' ', officer.officer_last) as officer_name, officer.officer_type, officer.activity_status
     FROM officer
-<<<<<<< HEAD:COMMANDS.sql
     WHERE officer.badge_number = badge_num AND officer.type LIKE 'arresting';
 
     SELECT COUNT(DISTINCT officer.badge_number) INTO matches
     FROM officer
     WHERE officer.badge_number = badge_num AND officer.type LIKE 'arresting';
-=======
-    WHERE officer.badge_number LIKE <ID> AND officer.type LIKE 'arresting';
-
-    SELECT COUNT(DISTINCT officer.badge_number) INTO matches
-    FROM officer
-    WHERE officer.badge_number LIKE <ID> AND officer.type LIKE 'arresting';
->>>>>>> bb70648 (all project stuff upload):Milestone_3/COMMANDS.sql
 end //
 
 DROP PROCEDURE IF EXISTS find_po_name //
@@ -517,35 +509,43 @@ begin
 end //
 
 -- Display info for all types of crimes
-SELECT crime.crime_code, crime.classification, crime.crime_description
-FROM crime
+-- SELECT crime.crime_code, crime.classification, crime.crime_description
+-- FROM crime
 
 -- FUNCTIONS/TRIGGERS
 -- Make payments: Function
-CREATE FUNCTION make_payment(IN payment FLOAT, IN case INT) returns FLOAT DETERMINISTIC
-begin
+CREATE FUNCTION make_payment(payment FLOAT, c_id INT) RETURNS FLOAT DETERMINISTIC
+BEGIN
     DECLARE amt_owed FLOAT;
+    DECLARE fin_amt FLOAT;
 
-    SET amt_owed = amt_owed + fine.fine_amount + fine.court_fee;
-    UPDATE fine SET paid_amount = payment
-    RETURN amt_owed;
-end //
+    SELECT (fine_amount + court_fee - paid_amount) INTO amt_owed
+    FROM fine
+    WHERE case_id = c_id;
 
-CREATE FUNCTION new_appeal(IN caseId INT, IN crim_id)
+    UPDATE fine 
+    SET paid_amount = paid_amount + payment
+    WHERE case_id = c_id;
+
+    SELECT amt_owed - payment INTO fin_amt;
+
+    RETURN fin_amt;
+END //
+
+CREATE PROCEDURE new_appeal(IN caseId INT, IN crim_id INT) 
 begin
     DECLARE new_app_ID INT;
-    SET new_app_ID = SELECT COUNT(DISTINCT appeal.appeal_id);
-    IF num_appeals_remaining > 0 AND caseId IS NOT NULL then
-        UPDATE appeal SET num_appeals_remaining = num_appeals_remaining - 1
+
+    SELECT COUNT(DISTINCT appeal.appeal_id) INTO new_app_ID
+    FROM appeal;
+
+    IF appeal.num_appeal < 3 AND caseId IS NOT NULL then
+        UPDATE appeal SET num_appeal = num_appeal + 1
         WHERE appeal.case_id = caseId;
 
         SET new_app_ID = new_app_ID + 1;
-        INSERT INTO appeal VALUES(new_app_ID, crim_id, caseId, num_appeals_remaining);
+        INSERT INTO appeal VALUES(new_app_ID, crim_id, caseId, num_appeal);
     END IF;
-<<<<<<< HEAD:COMMANDS.sql
-end //
-=======
 end //
 
 DELIMITER ;
->>>>>>> bb70648 (all project stuff upload):Milestone_3/COMMANDS.sql
