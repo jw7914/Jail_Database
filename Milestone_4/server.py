@@ -38,7 +38,7 @@ def runstatement(query, arguments=None):
 
 # NEED TO DO conn.close() at the end of each app.route
 @app.route('/', methods=['POST', 'GET'])
-def home():	
+def home():
 	if request.method == 'GET':
 		first_name = request.args.get('first-name', '')
 		last_name = request.args.get('last-name', '')
@@ -55,6 +55,7 @@ def home():
 			criminal_phonenum_list = []
 			violent_list = []
 			probation_list = []
+			case_idsearch = False
 			#search by everything
 			if first_name != '' and last_name != '' and alias != '' and case_id != '':
 				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE criminal_first = %s AND criminal_last = %s AND alias = %s AND crime_case.case_id = %s;"
@@ -63,18 +64,21 @@ def home():
 			elif first_name == '' and last_name == '' and alias != '' and case_id != '':
 				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE alias = %s AND crime_case.case_id = %s;"
 				df = runstatement(query, (alias, case_id))
+				case_idsearch = True
 			#search by name and alias
 			elif first_name != '' and last_name != '' and alias != '' and case_id == '':
-				query = "SELECT * FROM criminal WHERE first_name = %s AND last_name = %s AND crime_case.case_id = %s;"
+				query = "SELECT * FROM criminal WHERE criminal_first = %s AND criminal_last = %s AND alias = %s;"
 				df = runstatement(query, (first_name, last_name, alias))
 			#search by name and case_id
 			elif first_name != '' and last_name != '' and alias == '' and case_id != '':
 				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE criminal_first = %s AND criminal_last = %s AND crime_case.case_id = %s;"
 				df = runstatement(query, (first_name, last_name, case_id))
+				case_idsearch = True
 			#search by case_id
 			elif first_name == '' and last_name == '' and alias == '' and case_id != '':
 				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s;"
 				df = runstatement(query, (case_id))
+				case_idsearch = True
 			#search by name
 			elif first_name != '' and last_name != '' and alias == '' and case_id == '':
 				query = "SELECT * FROM criminal WHERE criminal_first = %s AND criminal_last = %s;"
@@ -88,7 +92,10 @@ def home():
 			for i, j in df.iterrows():
 				name_list.append(j['criminal_first'] + ' ' + j['criminal_last'])
 				alias_list.append(j['alias'])
-				criminal_id_list.append(j['criminal_id'].values[0]) 
+				if case_idsearch:
+					criminal_id_list.append(j['criminal_id'].values[0])
+				else:
+					criminal_id_list.append(j['criminal_id'])
 				criminal_address_list.append(j['criminal_address'])
 				violent_list.append(j['violent_offender_stat'])
 				probation_list.append(j['probation_status'])
@@ -108,7 +115,6 @@ def home():
 	else:
 		return render_template('home_test.html')
 		
-
 @app.route('/login')
 def login():
 	return render_template('login.html')
@@ -125,7 +131,6 @@ def test():
 	for i, j in df.iterrows():
 		criminal_ids.append(j['criminal_id'])
 	return render_template('test.html', criminal_ids=criminal_ids)
-
 
 if __name__ == "__main__":
 	app.run('127.0.0.1', 5000, debug = True)
