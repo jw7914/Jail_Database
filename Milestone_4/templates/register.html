@@ -38,6 +38,13 @@
                id="register_password"
                name="register_password"
                placeholder="Enter your Password" required>
+        <label for="register_password">
+            Badge Number:
+        </label>
+        <input type="text"
+                id="register_id"
+                name="register_id"
+                placeholder="Enter your Badge Number" required>
         <div class="wrap">
             <button type="button" onclick="validateLoginForm()">
                 Register
@@ -49,9 +56,10 @@
     function validateLoginForm() {
         var username = document.getElementById("register_username").value;
         var password = document.getElementById("register_password").value;
+        var id = document.getElementById("register_id").value;
 
-        if (!username || !password) {
-            alert("Please enter both Username and Password.");
+        if (!username || !password || !id) {
+            alert("Please enter Username, Password, and your Badge Number");
             return false;
         }
 

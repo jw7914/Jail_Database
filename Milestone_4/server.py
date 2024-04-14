@@ -41,14 +41,39 @@ Table storing users for login/registering purposes
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL
+    password VARCHAR(255) NOT NULL,
+    badge_number INT,
+    FOREIGN KEY (badge_number) REFERENCES officer(badge_number)
 );
 """
-def register(username, password):
+def register_auth(username, id):
+	#Check if username or badge number exists
+	cursor = conn.cursor()
+	query = "SELECT * FROM users WHERE username = %s OR badge_number = %s;"
+	cursor.execute(query, (username, id))
+	print(username, id)
+	user = cursor.fetchone()
+	if user:
+		cursor.close()
+		return(("User already exists", False))
+	cursor.close()
+	#Check if they are an officer 
+	cursor = conn.cursor()
+	query = "SELECT * FROM officer WHERE badge_number = %s;"
+	cursor.execute(query, (id))
+	auth = cursor.fetchone()
+	if auth:
+		cursor.close()
+		return(("", True))
+	else:
+		cursor.close()
+		return(("Invalid Officer Badge Number", False))
+
+def register(username, password, id):
 	hashed_password = generate_password_hash(password)
 	cursor = conn.cursor()
-	query = "INSERT INTO users (username, password) VALUES (%s, %s)"
-	cursor.execute(query, (username, hashed_password))
+	query = "INSERT INTO users (username, password, badge_number) VALUES (%s, %s, %s)"
+	cursor.execute(query, (username, hashed_password, id))
 	conn.commit()
 	cursor.close()
 
@@ -151,18 +176,16 @@ def register_route():
 	if request.method == 'POST':
 		username = request.form['register_username']
 		password = request.form['register_password']
-		cursor = conn.cursor()
-		query = "SELECT * FROM users WHERE username = %s;"
-		cursor.execute(query, (username))
-		user = cursor.fetchone()
-		if user:
-			flash('Username already exists. Please choose a different username.')
-			cursor.close()
-			return render_template('register.html')
-		else:
-			register(username, password)
-			cursor.close()
+		id = int(request.form['register_id'])
+		results = register_auth(username, id)
+		message = results[0]
+		access = results[1]
+		if access:
+			register(username, password, id)
 			return redirect(url_for('home'))
+		else:
+			flash(message)
+			return render_template('register.html')
 	return render_template('register.html')
 
 
