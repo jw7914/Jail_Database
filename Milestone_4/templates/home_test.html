@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='./css/home.css') }}">    
+{% endblock %}
+
+{% block title %}
+Jail Homepage
+{% endblock %}
+
+{% block body %}
+<nav class="navbar">
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="help">Help</a></li>
+        <li><a href="login">Login</a></li>
+    </ul>
+</nav>
+<div class="main">
+    <div class="main-query">
+        <h1>Search Bar</h1>
+        <h3>Query by Case, Name, or Alias!</h3>
+        <form id="search-form" action="http://127.0.0.1:5000/" method="GET">
+            <div>
+                <label for="case-num">
+                    Case Number:
+                </label>
+                <input type="number"
+                       id="case-num"
+                       name="case-num"
+                       placeholder="Enter case number">
+            </div>
+            <div class="name">
+                <label for="first-name">
+                    First Name:
+                </label>
+                <input type="text"
+                       id="first-name"
+                       name="first-name"
+                       placeholder="First name" required>
+            </div>
+            <div class="name">
+                <label for="last-name">
+                    Last Name:
+                </label>
+                <input type="text"
+                       id="last-name"
+                       name="last-name"
+                       placeholder="Last name" required>
+            </div>
+            <div>
+                <label for="alias">
+                    Alias:
+                </label>
+                <input type="text"
+                       id="alias"
+                       name="alias"
+                       placeholder="Enter alias">
+            </div>
+            <div class="wrap">
+                <button type="button" onclick="validateSearchForm()">
+                    Search
+                </button>
+            </div>
+        </form>
+
+        <script>
+        function validateSearchForm() {
+            var caseNum = document.getElementById("case-num").value;
+            var firstName = document.getElementById("first-name").value;
+            var lastName = document.getElementById("last-name").value;
+            var alias = document.getElementById("alias").value;
+
+            if ((!caseNum && (!firstName || !lastName)) && !alias) {
+                alert("Please enter either Case Number, First Name and Last Name together, or Alias.");
+                return false;
+            }
+
+            document.getElementById("search-form").submit();
+        }
+        </script>
+    </div>
+    <div class="govt-login">
+        <h1>Government Login</h1>
+        <h3>Enter your login credentials</h3>
+        <form id="login-form" action="http://127.0.0.1:5000/login" method="POST">
+            <label for="first">
+                  Username:
+              </label>
+            <input type="text"
+                   id="first"
+                   name="first"
+                   placeholder="Enter your Username" required>
+
+            <label for="password">
+                  Password:
+              </label>
+            <input type="password"
+                   id="password"
+                   name="password"
+                   placeholder="Enter your Password" required>
+            <div class="wrap">
+                <button type="button" onclick="validateLoginForm()">
+                    Login
+                </button>
+            </div>
+        </form>
+
+        <script>
+        function validateLoginForm() {
+            var username = document.getElementById("first").value;
+            var password = document.getElementById("password").value;
+
+            if (!username || !password) {
+                alert("Please enter both Username and Password.");
+                return false;
+            }
+
+            document.getElementById("login-form").submit();
+        }
+        </script>
+    </div>
+</div>
+{% endblock %}

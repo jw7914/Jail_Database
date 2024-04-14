@@ -477,11 +477,19 @@ CREATE PROCEDURE find_ao_badge(in badge_num INT, out matches INT)
 begin
     SELECT CONCAT(officer.officer_first, ' ', officer.officer_last) as officer_name, officer.officer_type, officer.activity_status
     FROM officer
+<<<<<<< HEAD:COMMANDS.sql
+    WHERE officer.badge_number = badge_num AND officer.type LIKE 'arresting';
+
+    SELECT COUNT(DISTINCT officer.badge_number) INTO matches
+    FROM officer
+    WHERE officer.badge_number = badge_num AND officer.type LIKE 'arresting';
+=======
     WHERE officer.badge_number LIKE <ID> AND officer.type LIKE 'arresting';
 
     SELECT COUNT(DISTINCT officer.badge_number) INTO matches
     FROM officer
     WHERE officer.badge_number LIKE <ID> AND officer.type LIKE 'arresting';
+>>>>>>> bb70648 (all project stuff upload):Milestone_3/COMMANDS.sql
 end //
 
 DROP PROCEDURE IF EXISTS find_po_name //
@@ -534,4 +542,10 @@ begin
         SET new_app_ID = new_app_ID + 1;
         INSERT INTO appeal VALUES(new_app_ID, crim_id, caseId, num_appeals_remaining);
     END IF;
+<<<<<<< HEAD:COMMANDS.sql
 end //
+=======
+end //
+
+DELIMITER ;
+>>>>>>> bb70648 (all project stuff upload):Milestone_3/COMMANDS.sql

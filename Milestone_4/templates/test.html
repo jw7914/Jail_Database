@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}
+Test
+{% endblock %}
+
+{% block body %}
+    {% for criminal_id in criminal_ids %}
+        <p>{{ criminal_id }}</p>
+    {% endfor %}
+{% endblock %}
