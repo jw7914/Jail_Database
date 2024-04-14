@@ -110,6 +110,14 @@ def home():
 			elif first_name == '' and last_name == '' and alias != '' and case_id == '':
 				query = "SELECT * FROM criminal WHERE alias = %s;"
 				df = runstatement(query, (alias))
+			#search by first name only
+			elif first_name != '' and last_name == '' and alias == '' and case_id == '':
+				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE criminal_first = %s;"
+				df = runstatement(query, (first_name))
+			#search by last name only
+			elif first_name == '' and last_name != '' and alias == '' and case_id == '':
+				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE criminal_last = %s;"
+				df = runstatement(query, (last_name))
 
 			# Populate lists from DataFrame
 			for i, j in df.iterrows():

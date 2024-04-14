@@ -70,7 +70,7 @@ Jail Homepage
             var lastName = document.getElementById("last-name").value;
             var alias = document.getElementById("alias").value;
 
-            if ((!caseNum && (!firstName || !lastName)) && !alias) {
+            if (!caseNum && !firstName && !lastName && !alias) {
                 alert("Please enter either Case Number, First Name and Last Name together, or Alias.");
                 return false;
             }
