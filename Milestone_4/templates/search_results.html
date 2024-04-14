@@ -4,21 +4,34 @@
 Inmate Search Results
 {% endblock %}
 
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='./css/search.css') }}">    
+{% endblock %}
 {% block body %}
+<nav class="navbar">
+    <ul>
+        <li><a href="/">Home</a></li>
+    </ul>
+</nav>
     {% if empty %}
         <h1>No Results Found</h1>
     {% else %}
-        {% for name, criminal_id, alias, criminal_address, criminal_phonenum, violent, probation in zipped_data %}
-            <p>Name: {{ name }}</p>
-            <ul>
-                <li>Criminal ID: {{ criminal_id }}</li>
-                <li>Alias: {{ alias }}</li>
-                <li>Address: {{ criminal_address }}</li>
-                <li>Phone: {{ criminal_phonenum }}</li>
-                <li>Violent Offender:{% if violent %}&#10004; {% else %} &#10005;{% endif %}</li>
-                <li>Probation Status:{% if probation %}&#10004; {% else %} &#10005;{% endif %}</li>
+        <div class="container">
+            <h1>Search Results</h1>
+            {% for name, criminal_id, alias, criminal_address, criminal_phonenum, violent, probation in zipped_data %}
+            <ul class="results-list">
+                    <li class="result-item">
+                        <h2>{{ name }}</h2>
+                        <p><strong>Criminal ID:</strong> {{ criminal_id }}</p>
+                        <p><strong>Alias:</strong> {{ alias }}</p>
+                        <p><strong>Address:</strong> {{ criminal_address }}</p>
+                        <p><strong>Phone Number:</strong> {{ criminal_phonenum }}</p>
+                        <p><strong>Violent Offender:</strong> {% if violent %}&#10004; {% else %} &#10005;{% endif %}</p>
+                        <p><strong>Probation Status:</strong> {% if probation %}&#10004; {% else %} &#10005;{% endif %}</p>
+                    </li>
+            {% endfor %}
             </ul>
-        {% endfor %}
+        </div>
     {% endif %}
     
 {% endblock %}

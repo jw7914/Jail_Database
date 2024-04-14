@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='./css/register.css') }}">    
+{% endblock %}
+
+{% block body %}
+<nav class="navbar">
+    <ul>
+        <li><a href="/">Home</a></li>
+    </ul>
+</nav>
+<div class="govt-login">
+    <h1>Government Register</h1>
+    <h3>Enter your registration credentials</h3>
+    <form id="login-form" action="http://127.0.0.1:5000/" method="post">
+        <label for="username">
+            Username:
+        </label>
+        <input type="text"
+               id="username"
+               name="username"
+               placeholder="Enter your Username" required>
+
+        <label for="password">
+            Password:
+        </label>
+        <input type="password"
+               id="password"
+               name="password"
+               placeholder="Enter your Password" required>
+        <div class="wrap">
+            <button type="button" onclick="validateLoginForm()">
+                Register
+            </button>
+        </div>
+    </form>
+
+    <script>
+    function validateLoginForm() {
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+
+        if (!username || !password) {
+            alert("Please enter both Username and Password.");
+            return false;
+        }
+
+        document.getElementById("login-form").submit();
+    }
+    </script>
+</div>    
+{% endblock %}

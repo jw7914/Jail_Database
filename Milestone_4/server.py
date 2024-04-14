@@ -113,11 +113,11 @@ def home():
 		#need to call an sql statement to validate which type officer to return right template
 		return render_template('private_probation.html', username=username, password=password)
 	else:
-		return render_template('home_test.html')
-		
-@app.route('/login')
+		return render_template('home_test.html')		
+
+@app.route('/register')
 def login():
-	return render_template('login.html')
+	return render_template('register.html')
 
 @app.route('/help')
 def help():
