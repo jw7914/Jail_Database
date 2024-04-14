@@ -10,24 +10,33 @@
         <li><a href="/">Home</a></li>
     </ul>
 </nav>
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+{% endwith %}
 <div class="govt-login">
     <h1>Government Register</h1>
     <h3>Enter your registration credentials</h3>
-    <form id="login-form" action="http://127.0.0.1:5000/" method="post">
-        <label for="username">
+    <form id="register-form" action="{{ url_for('register_route') }}" method="post">
+        <label for="register_username">
             Username:
         </label>
         <input type="text"
-               id="username"
-               name="username"
+               id="register_username"
+               name="register_username"
                placeholder="Enter your Username" required>
 
-        <label for="password">
+        <label for="register_password">
             Password:
         </label>
         <input type="password"
-               id="password"
-               name="password"
+               id="register_password"
+               name="register_password"
                placeholder="Enter your Password" required>
         <div class="wrap">
             <button type="button" onclick="validateLoginForm()">
@@ -38,15 +47,15 @@
 
     <script>
     function validateLoginForm() {
-        var username = document.getElementById("username").value;
-        var password = document.getElementById("password").value;
+        var username = document.getElementById("register_username").value;
+        var password = document.getElementById("register_password").value;
 
         if (!username || !password) {
             alert("Please enter both Username and Password.");
             return false;
         }
 
-        document.getElementById("login-form").submit();
+        document.getElementById("register-form").submit();
     }
     </script>
 </div>    

@@ -1,13 +1,15 @@
 #Import Libraries
-from flask import Flask, render_template, request, session, url_for, redirect
+from flask import Flask, render_template, request, session, url_for, redirect, flash
 import pymysql.cursors
 from flask_mysqldb import MySQL 
 import pandas as PD
-from werkzeug.exceptions import BadRequestKeyError
+from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash
+
 
 #Initialize the app from Flask
 app = Flask(__name__)
-
+app.secret_key = 'jason'
 #Configure MySQL
 conn = pymysql.connect(host='localhost',
                        user='root',
@@ -29,17 +31,42 @@ def runstatement(query, arguments=None):
 		cursor.execute(query, arguments)
 		results = cursor.fetchall()
 		conn.commit()
-		column_names = [desc[0] for desc in cursor.description]
+		column_names = list(set(desc[0] for desc in cursor.description)) #Syntax to remove duplicate columns from joining tables
 		df = PD.DataFrame(results, columns=column_names)
 	cursor.close()
 	return df
 
+"""
+Table storing users for login/registering purposes
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
+"""
+def register(username, password):
+	hashed_password = generate_password_hash(password)
+	cursor = conn.cursor()
+	query = "INSERT INTO users (username, password) VALUES (%s, %s)"
+	cursor.execute(query, (username, hashed_password))
+	conn.commit()
+	cursor.close()
 
+def login(username, password):
+	cursor = conn.cursor()
+	query = "SELECT password FROM users WHERE username = %s"
+	cursor.execute(query, (username))
+	user = cursor.fetchone()
+	cursor.close()
+	if user and check_password_hash(user['password'], password):
+		return True
+	else:
+		return False
 
 # NEED TO DO conn.close() at the end of each app.route
 @app.route('/', methods=['POST', 'GET'])
 def home():
-	if request.method == 'GET':
+	if request.method == 'GET': #Basically if searching through public inmate
 		first_name = request.args.get('first-name', '')
 		last_name = request.args.get('last-name', '')
 		alias = request.args.get('alias', '')
@@ -55,7 +82,6 @@ def home():
 			criminal_phonenum_list = []
 			violent_list = []
 			probation_list = []
-			case_idsearch = False
 			#search by everything
 			if first_name != '' and last_name != '' and alias != '' and case_id != '':
 				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE criminal_first = %s AND criminal_last = %s AND alias = %s AND crime_case.case_id = %s;"
@@ -64,7 +90,6 @@ def home():
 			elif first_name == '' and last_name == '' and alias != '' and case_id != '':
 				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE alias = %s AND crime_case.case_id = %s;"
 				df = runstatement(query, (alias, case_id))
-				case_idsearch = True
 			#search by name and alias
 			elif first_name != '' and last_name != '' and alias != '' and case_id == '':
 				query = "SELECT * FROM criminal WHERE criminal_first = %s AND criminal_last = %s AND alias = %s;"
@@ -73,12 +98,10 @@ def home():
 			elif first_name != '' and last_name != '' and alias == '' and case_id != '':
 				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE criminal_first = %s AND criminal_last = %s AND crime_case.case_id = %s;"
 				df = runstatement(query, (first_name, last_name, case_id))
-				case_idsearch = True
 			#search by case_id
 			elif first_name == '' and last_name == '' and alias == '' and case_id != '':
 				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s;"
 				df = runstatement(query, (case_id))
-				case_idsearch = True
 			#search by name
 			elif first_name != '' and last_name != '' and alias == '' and case_id == '':
 				query = "SELECT * FROM criminal WHERE criminal_first = %s AND criminal_last = %s;"
@@ -92,10 +115,7 @@ def home():
 			for i, j in df.iterrows():
 				name_list.append(j['criminal_first'] + ' ' + j['criminal_last'])
 				alias_list.append(j['alias'])
-				if case_idsearch:
-					criminal_id_list.append(j['criminal_id'].values[0])
-				else:
-					criminal_id_list.append(j['criminal_id'])
+				criminal_id_list.append(j['criminal_id'])
 				criminal_address_list.append(j['criminal_address'])
 				violent_list.append(j['violent_offender_stat'])
 				probation_list.append(j['probation_status'])
@@ -107,21 +127,36 @@ def home():
 				zipped_data = zip(name_list, criminal_id_list, alias_list, criminal_address_list, criminal_phonenum_list, violent_list, probation_list)
 				# Render the template with zipped_data
 				return render_template('search_results.html', zipped_data=zipped_data)
-	elif request.method == 'POST':
+	elif request.method == 'POST': #If logging in
 		username = request.form['username']
 		password = request.form['password']
-		#need to call an sql statement to validate which type officer to return right template
-		return render_template('private_probation.html', username=username, password=password)
+		if login(username, password):
+			session['username'] = username
+			return render_template('private_probation.html', username=username, password=password)
+		else:
+			return render_template('error.html')
 	else:
-		return render_template('home_test.html')		
+		return render_template('home.html')		
 
-@app.route('/register')
-def login():
+@app.route('/register', methods=['GET', 'POST'])
+def register_route():
+	if request.method == 'POST':
+		username = request.form['register_username']
+		password = request.form['register_password']
+		cursor = conn.cursor()
+		query = "SELECT * FROM users WHERE username = %s;"
+		cursor.execute(query, (username))
+		user = cursor.fetchone()
+		if user:
+			flash('Username already exists. Please choose a different username.')
+			cursor.close()
+			return render_template('register.html')
+		else:
+			register(username, password)
+			cursor.close()
+			return redirect(url_for('home'))
 	return render_template('register.html')
 
-@app.route('/help')
-def help():
-	return render_template('help.html')
 
 @app.route('/test', methods=['POST', 'GET'])
 def test():
