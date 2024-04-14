@@ -385,7 +385,7 @@ VALUES
 ('VC78901', 19, 'Homicide violation'),
 ('VC12345', 20, 'Theft violation');
 
---SQL CODE
+-- SQL CODE
 DELIMITER //
 -- SEARCHES/INFO DISPLAY (No triggers needed)
 -- 3 MODES OF CRIMINAL SEARCH --> redirects to search result page
