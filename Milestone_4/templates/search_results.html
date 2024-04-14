@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}
+Inmate Search Results
+{% endblock %}
+
+{% block body %}
+    {% if empty %}
+        <h1>No Results Found</h1>
+    {% else %}
+        {% for name, criminal_id, alias, criminal_address, criminal_phonenum, violent, probation in zipped_data %}
+            <p>Name: {{ name }}</p>
+            <ul>
+                <li>Criminal ID: {{ criminal_id }}</li>
+                <li>Alias: {{ alias }}</li>
+                <li>Address: {{ criminal_address }}</li>
+                <li>Phone: {{ criminal_phonenum }}</li>
+                <li>Violent Offender:{% if violent %}&#10004; {% else %} &#10005;{% endif %}</li>
+                <li>Probation Status:{% if probation %}&#10004; {% else %} &#10005;{% endif %}</li>
+            </ul>
+        {% endfor %}
+    {% endif %}
+    
+{% endblock %}
