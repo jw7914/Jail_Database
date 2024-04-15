@@ -1,7 +1,6 @@
 #Import Libraries
 from flask import Flask, render_template, request, session, url_for, redirect, flash
 import pymysql.cursors
-from flask_mysqldb import MySQL 
 import pandas as PD
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
