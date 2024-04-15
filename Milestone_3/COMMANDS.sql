@@ -245,7 +245,7 @@ VALUES
 INSERT INTO OFFICER (badge_number, officer_first, officer_last, precinct, officer_phonenum, activity_status, officer_type, officer_address) 
 VALUES
 (1001, 'Michael', 'Brown', 'Precinct 1', '565-111-2232', 'Active', 'Arrest', '123 Elm St, City, USA'),
-(1002, 'Jennifer', 'Davis', 'Precinct 2', '998-222-3333', 'Active', 'Arrest', '456 Oak St, Town, USA'),
+(1002, 'Jennifer', 'Young', 'Precinct 2', '998-222-3333', 'Active', 'Arrest', '456 Oak St, Town, USA'),
 (1003, 'William', 'Wilson', 'Precinct 1', '679-333-4444', 'Active', 'Arrest', '789 Maple St, Village, USA'),
 (1004, 'Jessica', 'Taylor', 'Precinct 4', '650-444-5555', 'Active', 'Probation', '101 Cedar St, City, USA'),
 (1005, 'David', 'Miller', 'Precinct 5', '657-555-6666', 'Active', 'Probation', '202 Pine St, Town, USA'),
@@ -258,10 +258,10 @@ VALUES
 (1012, 'Ashley', 'King', 'Precinct 12', '979-222-3333', 'Active', 'Arrest', '909 Maple St, Village, USA'),
 (1013, 'Jason', 'Wu', 'Precinct 13', '932-333-4444', 'Active', 'Probation', '010 Cedar St, City, USA'),
 (1014, 'Nicole', 'Scott', 'Precinct 12', '627-444-5555', 'Active', 'Arrest', '111 Elm St, Town, USA'),
-(1015, 'Justin', 'Green', 'Precinct 12', '980-555-6666', 'Active', 'Probation', '212 Oak St, Village, USA'),
+(1015, 'Jason', 'Green', 'Precinct 12', '980-555-6666', 'Active', 'Probation', '212 Oak St, Village, USA'),
 (1016, 'Emily', 'Garcia', 'Precinct 15', '555-111-2222', 'Active', 'Arrest', '313 Elm St, City, USA'),
 (1017, 'Daniel', 'Martinez', 'Precinct 9', '667-222-3333', 'Active', 'Probation', '717 Oak St, Town, USA'),
-(1018, 'Ashley', 'Hernandez', 'Precinct 11', '222-333-4444', 'Active', 'Arrest', '818 Maple St, Village, USA'),
+(1018, 'Ashley', 'Martinez', 'Precinct 11', '222-333-4444', 'Active', 'Arrest', '818 Maple St, Village, USA'),
 (1019, 'Alex', 'Tang', 'Precinct 10', '333-444-5555', 'Active', 'Probation', '919 Cedar St, City, USA'),
 (1020, 'Rielle', 'Lim', 'Precinct 10', '444-555-6666', 'Active', 'Arrest', '020 Pine St, Town, USA');
 
