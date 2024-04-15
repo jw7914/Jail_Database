@@ -112,6 +112,7 @@ def home():
 			probation_list = []
 			if(case_id != ''):
 				if(first_name != '' and last_name == ''):
+					#Search function arguements in runstatment are what its running search by
 					if(alias == ''):
 						query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s AND criminal_first = %s;"
 						df = runstatement(query, (case_id, first_name))
@@ -142,28 +143,28 @@ def home():
 			else:
 				if first_name != '' and last_name == '':
 					if alias == '':
-						query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE criminal_first = %s;"
+						query = "SELECT * FROM criminal WHERE criminal_first = %s;"
 						df = runstatement(query, (first_name))
 					else:
-						query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE criminal_first = %s AND alias = %s;"   
+						query = "SELECT * FROM criminal WHERE criminal_first = %s AND alias = %s;"   
 						df = runstatement(query, (first_name, alias))
 				elif first_name == '' and last_name != '':
 					if alias == '':
-						query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE criminal_last = %s;"
+						query = "SELECT * FROM criminal WHERE criminal_last = %s;"
 						df = runstatement(query, (last_name))
 					else:
-						query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE criminal_last = %s AND alias = %s;"
+						query = "SELECT * FROM criminal WHERE criminal_last = %s AND alias = %s;"
 						df = runstatement(query, (last_name, alias))
 				elif first_name != '' and last_name != '':
 					if alias == '':
-						query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE criminal_first = %s AND criminal_last = %s;"
+						query = "SELECT * FROM criminal WHERE criminal_first = %s AND criminal_last = %s;"
 						df = runstatement(query, (first_name, last_name))
 					else:
-						query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE criminal_first = %s AND criminal_last = %s AND alias = %s;"   
+						query = "SELECT * FROM criminal criminal_first = %s AND criminal_last = %s AND alias = %s;"   
 						df = runstatement(query, (first_name, last_name, alias))
 				else:
 					if alias != '':
-						query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE alias = %s;"
+						query = "SELECT * FROM criminal WHERE alias = %s;"
 						df = runstatement(query, (alias))
 
 			# Populate lists from DataFrame
