@@ -19,6 +19,7 @@ conn = pymysql.connect(host='localhost',
                        cursorclass=pymysql.cursors.DictCursor)
 
 #Pass with no arguments/Pass with arguments in a tuple
+#Runs query and returns values in a Dataframe for traversing purposes
 def runstatement(query, arguments=None):
 	cursor = conn.cursor()
 	if arguments == None:
@@ -46,12 +47,12 @@ CREATE TABLE users (
     FOREIGN KEY (badge_number) REFERENCES officer(badge_number)
 );
 """
+#Checking for valid registration creds
 def register_auth(username, id):
 	#Check if username or badge number exists
 	cursor = conn.cursor()
 	query = "SELECT * FROM users WHERE username = %s OR badge_number = %s;"
 	cursor.execute(query, (username, id))
-	print(username, id)
 	user = cursor.fetchone()
 	if user:
 		cursor.close()
@@ -69,7 +70,7 @@ def register_auth(username, id):
 		cursor.close()
 		return(("Invalid Officer Badge Number", False))
 
-#Register by putting 
+#Register by putting values into users table
 def register(username, password, id):
 	hashed_password = generate_password_hash(password)
 	cursor = conn.cursor()
@@ -78,6 +79,7 @@ def register(username, password, id):
 	conn.commit()
 	cursor.close()
 
+#Reference user table to see if they are registered. login if registered
 def login(username, password):
 	cursor = conn.cursor()
 	query = "SELECT password FROM users WHERE username = %s"
