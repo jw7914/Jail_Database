@@ -69,6 +69,7 @@ def register_auth(username, id):
 		cursor.close()
 		return(("Invalid Officer Badge Number", False))
 
+#Register by putting 
 def register(username, password, id):
 	hashed_password = generate_password_hash(password)
 	cursor = conn.cursor()
