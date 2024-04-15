@@ -188,7 +188,11 @@ def home():
 		password = request.form['password']
 		if login(username, password):
 			session['username'] = username
-			return render_template('private_probation.html', username=username, password=password)
+			query = "SELECT officer_first FROM OFFICER WHERE badge_number IN (SELECT badge_number FROM users WHERE username = %s)"
+			cursor = conn.cursor()
+			cursor.execute(query, (username))
+			details = cursor.fetchone()
+			return render_template('private_probation.html', f_name=details['officer_first'], password=password)
 		else:
 			return render_template('error.html')
 	else:
