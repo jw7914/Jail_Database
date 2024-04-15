@@ -59,7 +59,7 @@ CREATE TABLE FINE (
 
 CREATE TABLE OFFICER (
     badge_number INT,
-    office_first VARCHAR(40),
+    officer_first VARCHAR(40),
     officer_last VARCHAR(40),
     precinct VARCHAR(40),
     officer_phonenum VARCHAR(12),
@@ -242,7 +242,7 @@ VALUES
 (20, 20, 2800.00, 250.00, 0.00, '2024-04-22');
 
 -- OFFICER table entries
-INSERT INTO OFFICER (badge_number, office_first, officer_last, precinct, officer_phonenum, activity_status, officer_type, officer_address) 
+INSERT INTO OFFICER (badge_number, officer_first, officer_last, precinct, officer_phonenum, activity_status, officer_type, officer_address) 
 VALUES
 (1001, 'Michael', 'Brown', 'Precinct 1', '565-111-2232', 'Active', 'Arrest', '123 Elm St, City, USA'),
 (1002, 'Jennifer', 'Davis', 'Precinct 2', '998-222-3333', 'Active', 'Arrest', '456 Oak St, Town, USA'),
