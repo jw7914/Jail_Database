@@ -111,6 +111,15 @@ CREATE TABLE VIOLATION (
     PRIMARY KEY(violation_code, criminal_id)
 );
 
+-- Table storing users for login/registering purposes
+CREATE TABLE USERS(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    badge_number INT,
+    FOREIGN KEY (badge_number) REFERENCES officer(badge_number)
+);
+
 -- INSERT STATEMENTS
 -- CRIMINAL table entries
 INSERT INTO CRIMINAL (criminal_id, criminal_first, criminal_last, criminal_address, criminal_phonenum, violent_offender_stat, probation_status, alias)
