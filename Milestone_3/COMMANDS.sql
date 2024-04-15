@@ -131,18 +131,18 @@ VALUES
 (5, 'Robert', 'Williams', '202 Cedar St, Town, USA', '541-333-4444', TRUE, TRUE, 'RW'),
 (6, 'Jennifer', 'Garcia', '303 Maple St, Village, USA', '555-444-5555', FALSE, TRUE, 'JG'),
 (7, 'David', 'Martinez', '404 Birch St, City, USA', '321-555-6666', TRUE, FALSE, 'DM'),
-(8, 'Jessica', 'Lopez', '505 Spruce St, Town, USA', '114-666-7777', FALSE, TRUE, 'JL'),
-(9, 'Daniel', 'Gonzalez', '606 Pine St, Village, USA', '122-777-8888', TRUE, FALSE, 'DG'),
+(8, 'Jennifer', 'Lopez', '505 Spruce St, Town, USA', '114-666-7777', FALSE, TRUE, 'JL'),
+(9, 'Michael', 'James', '606 Pine St, Village, USA', '122-777-8888', TRUE, FALSE, 'MJ'),
 (10, 'Sarah', 'Rodriguez', '707 Oak St, City, USA', '675-888-9999', FALSE, TRUE, 'SR'),
 (11, 'Christopher', 'Hernandez', '808 Cedar St, Town, USA', '124-999-0000', TRUE, FALSE, 'CH'),
 (12, 'Ashley', 'Nguyen', '909 Maple St, Village, USA', '125-111-2222', FALSE, TRUE, 'AN'),
 (13, 'Matthew', 'Walker', '010 Birch St, City, USA', '234-222-3333', TRUE, FALSE, 'MW'),
-(14, 'Amanda', 'Perez', '111 Spruce St, Town, USA', '223-333-4444', FALSE, TRUE, 'AP'),
+(14, 'Amanda', 'Lopez', '111 Spruce St, Town, USA', '223-333-4444', FALSE, TRUE, 'AL'),
 (15, 'Joshua', 'Taylor', '212 Pine St, Village, USA', '778-444-5555', TRUE, FALSE, 'JT'),
 (16, 'Rachel', 'Clark', '404 Chestnut St, City, USA', '555-123-4567', FALSE, TRUE, 'RC'),
 (17, 'Brian', 'Young', '505 Walnut St, Town, USA', '575-987-6543', TRUE, FALSE, 'BY'),
-(18, 'Olivia', 'Hall', '606 Pine St, Village, USA', '666-111-2222', TRUE, FALSE, 'OH'),
-(19, 'Steven', 'Wright', '707 Oak St, City, USA', '999-222-3333', FALSE, FALSE, 'SW'),
+(18, 'Sarah', 'Hall', '606 Pine St, Village, USA', '666-111-2222', TRUE, FALSE, 'SH'),
+(19, 'Steven', 'King', '707 Oak St, City, USA', '999-222-3333', FALSE, FALSE, 'SK'),
 (20, 'Natalie', 'King', '808 Cedar St, Town, USA', '888-333-4444', TRUE, FALSE, 'NK');
 
 -- CHARGE table entries
