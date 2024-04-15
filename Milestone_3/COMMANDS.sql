@@ -548,8 +548,8 @@ begin
     SELECT COUNT(DISTINCT appeal.appeal_id) INTO new_app_ID
     FROM appeal;
 
-    IF appeal.num_appeal < 3 AND caseId IS NOT NULL then
-        UPDATE appeal SET num_appeal = num_appeal + 1
+    IF appeal.num_appeal_remaining > 0 AND caseId IS NOT NULL then
+        UPDATE appeal SET num_appeal_remaining = num_appeal_remaining - 1
         WHERE appeal.case_id = caseId;
 
         SET new_app_ID = new_app_ID + 1;
