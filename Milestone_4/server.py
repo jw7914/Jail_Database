@@ -11,12 +11,19 @@ from werkzeug.security import check_password_hash
 app = Flask(__name__)
 app.secret_key = 'jason'
 #Configure MySQL
-conn = pymysql.connect(host='localhost',
-                       user='root',
-                       password='',
-                       db='jail',
-                       charset='utf8mb4',
-                       cursorclass=pymysql.cursors.DictCursor)
+try:
+    conn = pymysql.connect(host='localhost',
+                           user='root',
+                           password='',
+                           db='jail',
+                           charset='utf8mb4',
+                           cursorclass=pymysql.cursors.DictCursor)
+    print("==================\nConnected to the database!\n==================")
+
+except pymysql.Error as e:
+    print(f"Error connecting to MySQL: {e}")
+    # Raise the exception to handle it further up the call stack if needed
+    raise
 
 #Pass with no arguments/Pass with arguments in a tuple
 #Runs query and returns values in a Dataframe for traversing purposes
