@@ -96,6 +96,9 @@ def login(username, password):
 # NEED TO DO conn.close() at the end of each app.route
 @app.route('/', methods=['POST', 'GET'])
 def home():
+	if "badge_number" in session:
+		badge_number = session['badge_number']
+		return redirect(url_for("officer_home", badge_number=badge_number))
 	if request.method == 'GET': #Basically if searching through public inmate
 		first_name = request.args.get('first-name', '')
 		last_name = request.args.get('last-name', '')
@@ -189,14 +192,14 @@ def home():
 		username = request.form['username']
 		password = request.form['password']
 		if login(username, password):
-			session['username'] = username
-			query = "SELECT officer_first FROM OFFICER WHERE badge_number IN (SELECT badge_number FROM users WHERE username = %s)"
+			query = "SELECT officer_first, badge_number FROM OFFICER WHERE badge_number IN (SELECT badge_number FROM users WHERE username = %s)"
 			cursor = conn.cursor()
 			cursor.execute(query, (username))
 			details = cursor.fetchone()
-			return render_template('private_probation.html', f_name=details['officer_first'], password=password)
+			session['badge_number'] = details['badge_number']
+			return redirect(url_for("officer_home", badge_number=details['badge_number']))
 		else:
-			return render_template('error.html')
+			return render_template('error_cred.html')
 	else:
 		return render_template('home.html')		
 
@@ -217,6 +220,24 @@ def register_route():
 			return render_template('register.html')
 	return render_template('register.html')
 
+@app.route("/<badge_number>")
+def officer_home(badge_number):
+	if "badge_number" in session:
+		session_auth = str(session['badge_number'])
+		if session_auth == badge_number:
+			cursor = conn.cursor()
+			query = "SELECT officer_first FROM officer WHERE badge_number = %s;"
+			cursor.execute(query, (badge_number))
+			result = cursor.fetchone()
+			return render_template("private_probation.html", f_name = result["officer_first"])
+	else:
+		return render_template("error_access.html")
+
+
+@app.route('/logout')
+def logout():
+	session.pop("badge_number", None)
+	return redirect(url_for("home"))
 
 @app.route('/test', methods=['POST', 'GET'])
 def test():
