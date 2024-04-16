@@ -5,10 +5,13 @@ Create different privileges for different types of users -- Database security of
 Create an master admin page (give it root permissions) so that users logins can be managed and inserts/deletes can be done
 
 Maybe sort data? Export/import data? -- Listed in milestone 4 pdf
+    Rielle (i can try)
 
 Support existing users??? -- Jason doing already with sessions? Needa figure out finer detials
 
 Program front end of the wireframes
+    Officer Pages x2 : Rielle
+
 
 Maybe write more functions to clean up querys within the python file?
 
