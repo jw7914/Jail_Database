@@ -4,11 +4,9 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='./css/register.css') }}">    
 {% endblock %}
 
-
 {% block title %}
-Government Register 
+Admin Login
 {% endblock %}
-
 {% block body %}
 <nav class="navbar">
     <ul>
@@ -25,50 +23,42 @@ Government Register
     {% endif %}
 {% endwith %}
 <div class="govt-login">
-    <h1>Government Register</h1>
-    <h3>Enter your registration credentials</h3>
-    <form id="register-form" action="{{ url_for('register_route') }}" method="post">
-        <label for="register_username">
+    <h1>Admin Login</h1>
+    <h3>Enter your login credentials</h3>
+    <form id="adminlogin-form" action="{{ url_for('admin_login') }}" method="post">
+        <label for="admin_username">
             Username:
         </label>
         <input type="text"
-               id="register_username"
-               name="register_username"
+               id="admin_username"
+               name="admin_username"
                placeholder="Enter your Username" required>
 
-        <label for="register_password">
+        <label for="admin_password">
             Password:
         </label>
         <input type="password"
-               id="register_password"
-               name="register_password"
+               id="admin_password"
+               name="admin_password"
                placeholder="Enter your Password" required>
-        <label for="register_id">
-            Badge Number:
-        </label>
-        <input type="text"
-                id="register_id"
-                name="register_id"
-                placeholder="Enter your Badge Number" required>
         <div class="wrap">
             <button type="button" onclick="validateLoginForm()">
-                Register
+                Login
             </button>
         </div>
     </form>
 
     <script>
     function validateLoginForm() {
-        var username = document.getElementById("register_username").value;
-        var password = document.getElementById("register_password").value;
-        var id = document.getElementById("register_id").value;
+        var username = document.getElementById("admin_username").value;
+        var password = document.getElementById("admin_password").value;
 
-        if (!username || !password || !id) {
-            alert("Please enter Username, Password, and your Badge Number");
+        if (!username || !password) {
+            alert("Please enter Username and Password");
             return false;
         }
 
-        document.getElementById("register-form").submit();
+        document.getElementById("adminlogin-form").submit();
     }
     </script>
 </div>    

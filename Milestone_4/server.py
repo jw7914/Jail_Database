@@ -93,12 +93,25 @@ def login(username, password):
 	else:
 		return False
 
+def admin_auth(username, password):
+	if username == 'jason' and password == 'jason':
+		return True
+	else:
+		return False
+
+
+
+
+#=============================================================== Seperate functions and routes
+
 # NEED TO DO conn.close() at the end of each app.route
 @app.route('/', methods=['POST', 'GET'])
 def home():
 	if "badge_number" in session:
 		badge_number = session['badge_number']
 		return redirect(url_for("officer_home", badge_number=badge_number))
+	if "admin" in session:
+		return redirect(url_for("admin"))
 	if request.method == 'GET': #Basically if searching through public inmate
 		first_name = request.args.get('first-name', '')
 		last_name = request.args.get('last-name', '')
@@ -238,6 +251,20 @@ def officer_home(badge_number):
 def logout():
 	session.pop("badge_number", None)
 	return redirect(url_for("home"))
+
+@app.route('/login', methods=['POST', 'GET'])
+def admin_login():
+	if request.method == 'POST':
+		username = request.form['admin_username']
+		password = request.form['admin_password']
+		if admin_auth(username, password):
+			session['admin'] = username
+			return redirect(url_for("admin"))
+	return render_template("admin_login.html")
+
+@app.route('/admin')
+def admin():
+	return f"Admin Page"
 
 @app.route('/test', methods=['POST', 'GET'])
 def test():

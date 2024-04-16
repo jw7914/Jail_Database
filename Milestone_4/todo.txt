@@ -19,3 +19,4 @@ Maybe write more functions to clean up querys within the python file?
 Questions:
 For multiple user accessing how do we it host online or can we do it locally?
 Ask about transaction manager? we dont have to manually implement right? The db automatically does it we just need to commit changes?
+Ask about returning users is sessions engouh? Clarify on the requirements

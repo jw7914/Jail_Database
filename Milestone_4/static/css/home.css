@@ -105,3 +105,8 @@ div .name {
     margin-right: 0px;
     width: 49%;
 }
+
+p {
+    margin: 0%;
+    padding: 0px;
+}
