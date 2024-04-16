@@ -8,23 +8,29 @@ from werkzeug.security import check_password_hash
 
 #Initialize the app from Flask
 app = Flask(__name__)
+#Doesn't matter just used for flask verification
 app.secret_key = 'jason'
-#Configure MySQL
-try:
-    conn = pymysql.connect(host='localhost',
-                           user='root',
-                           password='',
-                           db='jail',
-                           charset='utf8mb4',
-                           cursorclass=pymysql.cursors.DictCursor)
-    print("==================\nConnected to the database!\n==================")
 
-except pymysql.Error as e:
-    print(f"Error connecting to MySQL: {e}")
-    # Raise the exception to handle it further up the call stack if needed
-    raise
+#Configure MySQL and connect to certain user defualt too root user
+def connectDB(u = 'root', pw = ''):
+	try:
+		conn = pymysql.connect(host='localhost',
+							user=u,
+							password=pw,
+							db='jail',
+							charset='utf8mb4',
+							cursorclass=pymysql.cursors.DictCursor)
+		print("==================\nConnected to the database!\n==================")
+		return conn
+	except pymysql.Error as e:
+		print(f"Error connecting to MySQL: {e}")
+		# Raise the exception to handle it further up the call stack if needed
+		raise
 
-#Pass with no arguments/Pass with arguments in a tuple
+#Connect to root user -- probably change to lowest permission privilege and then work way up in each route
+conn = connectDB()
+
+#Default if only query is passed then it will execute with root user with no arguments
 #Runs query and returns values in a Dataframe for traversing purposes
 def runstatement(query, arguments=None):
 	cursor = conn.cursor()
@@ -43,16 +49,6 @@ def runstatement(query, arguments=None):
 	cursor.close()
 	return df
 
-"""
-Table storing users for login/registering purposes
-CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    badge_number INT,
-    FOREIGN KEY (badge_number) REFERENCES officer(badge_number)
-);
-"""
 #Checking for valid registration creds
 def register_auth(username, id):
 	#Check if username or badge number exists
