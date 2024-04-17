@@ -8,9 +8,12 @@ Maybe sort data? Export/import data? -- Listed in milestone 4 pdf
     Rielle (i can try)
 
 Support existing users??? -- Jason doing already with sessions? Needa figure out finer detials
+-- Kinda dealt with basically just need to do commit whenever an user does an action which is done we are good
 
 Program front end of the wireframes
     Officer Pages x2 : Rielle
+    Officer probation page done - need to implement search functionality
+    Officer arrest page needs to be implemented - logic for redirection is implemented
 
 
 Maybe write more functions to clean up querys within the python file?
