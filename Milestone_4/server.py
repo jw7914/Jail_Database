@@ -255,6 +255,10 @@ def officer_home(badge_number):
 			cf_name = result['criminal_first']
 			cl_name = result['criminal_last']
 			return render_template("private_probation.html", f_name=f_name, l_name=l_name, badge_number=badge_number, precinct=precinct, officer_address=officer_address, officer_phonenum=officer_phonenum, activity_status=activity_status, criminal_id=criminal_id, cf_name=cf_name, cl_name=cl_name)
+		else:
+			return render_template('error_access.html')
+	else:
+		return redirect(url_for('home'))
 
 
 
