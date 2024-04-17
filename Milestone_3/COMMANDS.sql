@@ -61,7 +61,7 @@ CREATE TABLE OFFICER (
     badge_number INT,
     officer_first VARCHAR(40),
     officer_last VARCHAR(40),
-    precinct VARCHAR(40),
+    precinct CHAR(5),
     officer_phonenum VARCHAR(12),
     activity_status VARCHAR(20),
     officer_type VARCHAR(20),
@@ -113,11 +113,12 @@ CREATE TABLE VIOLATION (
 
 -- Table storing users for login/registering purposes
 CREATE TABLE USERS(
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT,
     username VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     badge_number INT,
-    FOREIGN KEY (badge_number) REFERENCES officer(badge_number)
+    FOREIGN KEY (badge_number) REFERENCES officer(badge_number),
+    PRIMARY KEY(id)
 );
 
 -- INSERT STATEMENTS
@@ -244,26 +245,26 @@ VALUES
 -- OFFICER table entries
 INSERT INTO OFFICER (badge_number, officer_first, officer_last, precinct, officer_phonenum, activity_status, officer_type, officer_address) 
 VALUES
-(1001, 'Michael', 'Brown', 'Precinct 1', '565-111-2232', 'Active', 'Arrest', '123 Elm St, City, USA'),
-(1002, 'Jennifer', 'Young', 'Precinct 2', '998-222-3333', 'Active', 'Arrest', '456 Oak St, Town, USA'),
-(1003, 'William', 'Wilson', 'Precinct 1', '679-333-4444', 'Active', 'Arrest', '789 Maple St, Village, USA'),
-(1004, 'Jessica', 'Taylor', 'Precinct 4', '650-444-5555', 'Active', 'Probation', '101 Cedar St, City, USA'),
-(1005, 'David', 'Miller', 'Precinct 5', '657-555-6666', 'Active', 'Probation', '202 Pine St, Town, USA'),
-(1006, 'Sarah', 'Anderson', 'Precinct 6', '898-666-7777', 'Active', 'Arrest', '303 Elm St, Village, USA'),
-(1007, 'Matthew', 'Thomas', 'Precinct 7', '999-777-8888', 'Active', 'Probation', '404 Oak St, City, USA'),
-(1008, 'Emily', 'Jackson', 'Precinct 5', '469-888-9999', 'Active', 'Probation', '505 Maple St, Town, USA'),
-(1009, 'Daniel', 'White', 'Precinct 9', '996-999-0000', 'Active', 'Arrest', '606 Cedar St, Village, USA'),
-(1010, 'Amanda', 'Harris', 'Precinct 10', '659-000-1111', 'Active', 'Probation', '707 Elm St, City, USA'),
-(1011, 'Christopher', 'Young', 'Precinct 11', '567-111-2222', 'Active', 'Probation', '808 Oak St, Town, USA'),
-(1012, 'Ashley', 'King', 'Precinct 12', '979-222-3333', 'Active', 'Arrest', '909 Maple St, Village, USA'),
-(1013, 'Jason', 'Wu', 'Precinct 13', '932-333-4444', 'Active', 'Probation', '010 Cedar St, City, USA'),
-(1014, 'Nicole', 'Scott', 'Precinct 12', '627-444-5555', 'Active', 'Arrest', '111 Elm St, Town, USA'),
-(1015, 'Jason', 'Green', 'Precinct 12', '980-555-6666', 'Active', 'Probation', '212 Oak St, Village, USA'),
-(1016, 'Emily', 'Garcia', 'Precinct 15', '555-111-2222', 'Active', 'Arrest', '313 Elm St, City, USA'),
-(1017, 'Daniel', 'Martinez', 'Precinct 9', '667-222-3333', 'Active', 'Probation', '717 Oak St, Town, USA'),
-(1018, 'Ashley', 'Martinez', 'Precinct 11', '222-333-4444', 'Active', 'Arrest', '818 Maple St, Village, USA'),
-(1019, 'Alex', 'Tang', 'Precinct 10', '333-444-5555', 'Active', 'Probation', '919 Cedar St, City, USA'),
-(1020, 'Rielle', 'Lim', 'Precinct 10', '444-555-6666', 'Active', 'Arrest', '020 Pine St, Town, USA');
+(1001, 'Michael', 'Brown', '1', '565-111-2232', 'Active', 'Arrest', '123 Elm St, City, USA'),
+(1002, 'Jennifer', 'Young', '2', '998-222-3333', 'Active', 'Arrest', '456 Oak St, Town, USA'),
+(1003, 'William', 'Wilson', '1', '679-333-4444', 'Active', 'Arrest', '789 Maple St, Village, USA'),
+(1004, 'Jessica', 'Taylor', '4', '650-444-5555', 'Active', 'Probation', '101 Cedar St, City, USA'),
+(1005, 'David', 'Miller', '5', '657-555-6666', 'Active', 'Probation', '202 Pine St, Town, USA'),
+(1006, 'Sarah', 'Anderson', '6', '898-666-7777', 'Active', 'Arrest', '303 Elm St, Village, USA'),
+(1007, 'Matthew', 'Thomas', '7', '999-777-8888', 'Active', 'Probation', '404 Oak St, City, USA'),
+(1008, 'Emily', 'Jackson', '5', '469-888-9999', 'Active', 'Probation', '505 Maple St, Town, USA'),
+(1009, 'Daniel', 'White', '9', '996-999-0000', 'Active', 'Arrest', '606 Cedar St, Village, USA'),
+(1010, 'Amanda', 'Harris', '10', '659-000-1111', 'Active', 'Probation', '707 Elm St, City, USA'),
+(1011, 'Christopher', 'Young', '11', '567-111-2222', 'Active', 'Probation', '808 Oak St, Town, USA'),
+(1012, 'Ashley', 'King', '12', '979-222-3333', 'Active', 'Arrest', '909 Maple St, Village, USA'),
+(1013, 'Jason', 'Wu', '13', '932-333-4444', 'Active', 'Probation', '010 Cedar St, City, USA'),
+(1014, 'Nicole', 'Scott', '12', '627-444-5555', 'Active', 'Arrest', '111 Elm St, Town, USA'),
+(1015, 'Jason', 'Green', '12', '980-555-6666', 'Active', 'Probation', '212 Oak St, Village, USA'),
+(1016, 'Emily', 'Garcia', '15', '555-111-2222', 'Active', 'Arrest', '313 Elm St, City, USA'),
+(1017, 'Daniel', 'Martinez', '9', '667-222-3333', 'Active', 'Probation', '717 Oak St, Town, USA'),
+(1018, 'Ashley', 'Martinez', '11', '222-333-4444', 'Active', 'Arrest', '818 Maple St, Village, USA'),
+(1019, 'Alex', 'Tang', '10', '333-444-5555', 'Active', 'Probation', '919 Cedar St, City, USA'),
+(1020, 'Rielle', 'Lim', '10', '444-555-6666', 'Active', 'Arrest', '020 Pine St, Town, USA');
 
 -- ARREST table entries
 INSERT INTO ARREST (criminal_id, badge_number, crime_code, arrest_date) 

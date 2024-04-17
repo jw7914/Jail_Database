@@ -7,13 +7,38 @@ Probation Officer Home
 {% endblock %}
 
 {% block body %}
-<nav class="navbar">
-    <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/logout">Logout</a></li>
-    </ul>
-</nav>
 <div class="welcome">
     <h1>Hello, {{ f_name }}!</h1>
 </div>
+<nav class="navbar">
+    <ul>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
+</nav>
+
+<div class="cards">
+    <div class="detail-card">
+        <h2>Officer Details</h2>
+        <ul class="details-list">
+            <li class="details-item">
+                <h3>Officer {{ f_name }} {{ l_name }}</h3>
+                <p><strong>Badge Number:</strong> {{ badge_number }}</p>
+                <p><strong>Precinct:</strong> {{ precinct }}</p>
+                <p><strong>Address:</strong> {{ officer_address }}</p>
+                <p><strong>Phone Number:</strong> {{ officer_phonenum }}</p>
+                <p><strong>Active Probationary Officer:</strong> {% if activity_status %}&#10004; {% else %} &#10005;{% endif %}</p>
+            </li>
+        </ul>
+    </div>
+    <div class="probationary">
+        <h2>Probationary</h2>
+        <ul class="details-list">
+            <li class="details-item">
+                <p><strong>Criminal ID:</strong> {{ criminal_id }}</p>
+                <p><strong>Criminal Name:</strong> {{ cf_name }} {{ cl_name }}</p>
+            </li>
+        </ul>
+    </div>
+</div>
+
 {% endblock %}
