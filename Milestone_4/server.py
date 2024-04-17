@@ -233,7 +233,7 @@ def register_route():
 			return render_template('register.html')
 	return render_template('register.html')
 
-@app.route("/<badge_number>")
+@app.route("/<badge_number>", methods=['POST', 'GET'])
 def officer_home(badge_number):
     if "badge_number" in session:
         session_auth = str(session['badge_number'])
