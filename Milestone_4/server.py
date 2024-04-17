@@ -287,10 +287,16 @@ def officer_home(badge_number):
 
 
 
-@app.route('/logout')
-def logout():
+@app.route('/logout/officer')
+def officer_logout():
 	session.pop("badge_number", None)
 	return redirect(url_for("home"))
+
+@app.route('/logout/admin')
+def admin_logout():
+	session.pop("admin", None)
+	return redirect(url_for("home"))
+
 
 @app.route('/login', methods=['POST', 'GET'])
 def admin_login():
