@@ -19,7 +19,7 @@ body {
     padding: 20px;
 }
 
-h1 {
+welcome {
     text-align: center;
     float: left;
     margin-bottom: 30px;
@@ -46,6 +46,10 @@ h1 {
 }
 .navbar li{
     float: left;
+}
+
+.query-header {
+    width : "100%";
 }
 
 .cards {

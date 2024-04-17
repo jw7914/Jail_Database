@@ -10,6 +10,12 @@ body {
     margin: 0;
 }
  
+.officer-query
+{
+    margin-top: 30px;
+    text-align: center;
+}
+
 .main-query
 {
     background-color: #fff;

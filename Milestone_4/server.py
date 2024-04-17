@@ -235,30 +235,55 @@ def register_route():
 
 @app.route("/<badge_number>")
 def officer_home(badge_number):
-	if "badge_number" in session:
-		session_auth = str(session['badge_number'])
-		if session_auth == badge_number:
-			cursor = conn.cursor()
-			query = "SELECT * FROM officer INNER JOIN PROBATION ON officer.badge_number WHERE probation.badge_number = %s AND officer.badge_number = %s;"
-			cursor.execute(query, (badge_number, badge_number))
-			result = cursor.fetchone()
-			f_name = result['officer_first']
-			l_name = result['officer_last']
-			precinct=result['precinct']
-			officer_address = result['officer_address']
-			officer_phonenum = result['officer_phonenum']
-			activity_status = result['activity_status']
-			criminal_id = result['criminal_id']
-			query = "SELECT criminal_first, criminal_last FROM criminal INNER JOIN probation ON probation.criminal_id WHERE probation.criminal_id = %s AND criminal.criminal_id = %s;"
-			cursor.execute(query, (criminal_id, criminal_id))
-			result = cursor.fetchone()
-			cf_name = result['criminal_first']
-			cl_name = result['criminal_last']
-			return render_template("private_probation.html", f_name=f_name, l_name=l_name, badge_number=badge_number, precinct=precinct, officer_address=officer_address, officer_phonenum=officer_phonenum, activity_status=activity_status, criminal_id=criminal_id, cf_name=cf_name, cl_name=cl_name)
-		else:
-			return render_template('error_access.html')
-	else:
-		return redirect(url_for('home'))
+    if "badge_number" in session:
+        session_auth = str(session['badge_number'])
+        if session_auth == badge_number:
+            cursor = conn.cursor()
+            query = "SELECT * FROM officer WHERE officer.badge_number = %s;"
+            cursor.execute(query, (badge_number))
+            result = cursor.fetchone()
+            officer_type = result['officer_type']
+            if officer_type == 'Probation':
+                query = "SELECT * FROM officer INNER JOIN PROBATION ON officer.badge_number = probation.badge_number WHERE probation.badge_number = %s AND officer.badge_number = %s;"
+                cursor.execute(query, (badge_number, badge_number))
+                result = cursor.fetchone()
+                f_name = result['officer_first']
+                l_name = result['officer_last']
+                precinct=result['precinct']
+                officer_address = result['officer_address']
+                officer_phonenum = result['officer_phonenum']
+                activity_status = result['activity_status']
+                criminal_id = result['criminal_id']
+                query = "SELECT criminal.criminal_first, criminal.criminal_last FROM criminal INNER JOIN probation ON probation.criminal_id  = criminal.criminal_id WHERE probation.criminal_id = %s AND criminal.criminal_id = %s;"
+                cursor.execute(query, (criminal_id, criminal_id))
+                result = cursor.fetchone()
+                cf_name = result['criminal_first']
+                cl_name = result['criminal_last']
+                return render_template("private_probation.html", f_name=f_name, l_name=l_name, badge_number=badge_number, precinct=precinct, officer_address=officer_address, officer_phonenum=officer_phonenum, activity_status=activity_status, criminal_id=criminal_id, cf_name=cf_name, cl_name=cl_name)
+            elif officer_type == 'Arrest':
+                query = "SELECT * FROM officer INNER JOIN ARREST ON officer.badge_number = arrest.badge_number WHERE arrest.badge_number = %s AND officer.badge_number = %s;"
+                cursor.execute(query, (badge_number, badge_number))
+                result = cursor.fetchone()
+                f_name = result['officer_first']
+                l_name = result['officer_last']
+                precinct=result['precinct']
+                officer_address = result['officer_address']
+                officer_phonenum = result['officer_phonenum']
+                activity_status = result['activity_status']
+                criminal_id = result['criminal_id']
+                crime_code = result['crime_code']
+                query = "SELECT criminal.criminal_first, criminal.criminal_last FROM criminal INNER JOIN arrest ON arrest.criminal_id = criminal.criminal_id WHERE arrest.criminal_id = %s AND criminal.criminal_id = %s;"
+                cursor.execute(query, (criminal_id, criminal_id))
+                result = cursor.fetchone()
+                cf_name = result['criminal_first']
+                cl_name = result['criminal_last']
+                return render_template("private_arrest.html", f_name=f_name, l_name=l_name, badge_number=badge_number, precinct=precinct, officer_address=officer_address, officer_phonenum=officer_phonenum, activity_status=activity_status, criminal_id=criminal_id, cf_name=cf_name, cl_name=cl_name)
+            else:
+                return render_template('error_access.html')
+        else:
+            return render_template('error_access.html')
+    else:
+        return redirect(url_for('home'))
 
 
 
