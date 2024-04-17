@@ -248,8 +248,6 @@ def officer_home(badge_number):
 	else:
 		return redirect(url_for('home'))
 	
-
-
 @app.route('/logout')
 def logout():
 	session.pop("badge_number", None)
