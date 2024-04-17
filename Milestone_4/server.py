@@ -243,8 +243,11 @@ def officer_home(badge_number):
 			cursor.execute(query, (badge_number))
 			result = cursor.fetchone()
 			return render_template("private_probation.html", f_name = result["officer_first"])
+		else:
+			return render_template("error_access.html")
 	else:
-		return render_template("error_access.html")
+		return redirect(url_for('home'))
+	
 
 
 @app.route('/logout')
