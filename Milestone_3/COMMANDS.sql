@@ -121,6 +121,13 @@ CREATE TABLE USERS(
     PRIMARY KEY(id)
 );
 
+CREATE TABLE ADMINS(
+    id INT AUTO_INCREMENT,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    PRIMARY KEY(id)
+);
+
 -- INSERT STATEMENTS
 -- CRIMINAL table entries
 INSERT INTO CRIMINAL (criminal_id, criminal_first, criminal_last, criminal_address, criminal_phonenum, violent_offender_stat, probation_status, alias)
@@ -394,6 +401,13 @@ VALUES
 ('VC90123', 18, 'Kidnapping violation'),
 ('VC78901', 19, 'Homicide violation'),
 ('VC12345', 20, 'Theft violation');
+
+-- Create admin logins
+INSERT INTO ADMINS (username, password)
+VALUES
+("Jason", SHA("Jason")),
+("Rielle", SHA("Rielle")),
+("Alex", SHA("Alex"));
 
 -- SQL CODE
 DELIMITER //

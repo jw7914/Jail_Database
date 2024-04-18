@@ -7,6 +7,8 @@ import pandas as PD
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 
+# Only for testing for xammp doesn't matter will remove later
+print("Content-type: text/html\n")
 
 #Initialize the app from Flask
 app = Flask(__name__)
@@ -86,7 +88,7 @@ def register(username, password, id):
 #Reference user table to see if they are registered. login if registered
 def login(username, password):
 	cursor = conn.cursor()
-	query = "SELECT password FROM users WHERE username = %s"
+	query = "SELECT password FROM users WHERE username = %s;"
 	cursor.execute(query, (username))
 	user = cursor.fetchone()
 	cursor.close()
@@ -96,12 +98,15 @@ def login(username, password):
 		return False
 
 def admin_auth(username, password):
-	if username == 'jason' and password == 'jason':
+	cursor = conn.cursor()
+	query = "SELECT password FROM ADMINS WHERE username = %s AND password = SHA(%s);"
+	cursor.execute(query, (username, password))
+	admin = cursor.fetchone()
+	cursor.close()
+	if admin:
 		return True
-	else:
+	else: 
 		return False
-
-
 
 
 #=============================================================== Seperate functions and routes
@@ -308,6 +313,8 @@ def admin_login():
 		if admin_auth(username, password):
 			session['admin'] = username
 			return redirect(url_for("admin"))
+		else:
+			flash("Wrong Credentials")
 	return render_template("admin_login.html")
 
 @app.route('/admin')
