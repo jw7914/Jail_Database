@@ -301,7 +301,7 @@ def officer_logout():
 	session.pop("badge_number", None)
 	return redirect(url_for("home"))
 
-@app.route('/logout/admin')
+@app.route('/logout/admin', methods=['POST'])
 def admin_logout():
 	session.pop("admin", None)
 	return redirect(url_for("home"))
