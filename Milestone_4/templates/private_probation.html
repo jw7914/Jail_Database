@@ -45,7 +45,7 @@ Probation Officer Home
     <div class="main-query">
         <h1 class="query-header">Inmate Search</h1>
         <h3>Query by Case, Name, or Alias!</h3>
-        <form id="search-form" action="http://127.0.0.1:5000/" method="get">
+        <form id="search-form" action="http://127.0.0.1:5000/{{badge_number}}" method="get">
             <div>
                 <label for="case-num">
                     Case Number:
@@ -109,7 +109,7 @@ Probation Officer Home
     <div class="main-query">
         <h1 class="query-header">Officer Search</h1>
         <h3>Query by Name or Badge Number!</h3>
-        <form id="search-form" action="http://127.0.0.1:5000/" method="get">
+        <form id="search-form" action="http://127.0.0.1:5000/{{badge_number}}" method="get">
             <div class="name">
                 <label for="first-name">
                     First Name:
