@@ -1,4 +1,5 @@
-#!/Applications/XAMPP/xamppfiles/htdocs/Jail_Database/env/bin/python
+#!/opt/homebrew/var/www/Jail_Database/.venv/bin/python
+# <---- Shebang remove when running code and put back when pushing
 
 #Import Libraries
 from flask import Flask, render_template, request, session, url_for, redirect, flash
