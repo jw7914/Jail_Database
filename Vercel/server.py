@@ -13,11 +13,11 @@ app.secret_key = 'jason'
 #Configure MySQL and connect to certain user defualt too root user
 def connectDB(u = 'root', pw = ''):
 	try:
-		conn = pymysql.connect(host='0.tcp.ngrok.io',
+		conn = pymysql.connect(host='6.tcp.ngrok.io',
 							user=u,
 							password=pw,
 							db='jail',
-							port=15955,
+							port=16009,
 							charset='utf8mb4',
 							cursorclass=pymysql.cursors.DictCursor)
 		print("==================\nConnected to the database!\n==================")
