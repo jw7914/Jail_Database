@@ -1,0 +1,54 @@
+body{
+    margin: 0px;
+    background-color: f3f3f3;
+}
+main{
+    margin-left: 20px;
+    margin-right: 20px;
+}
+h1{
+    text-align: center;
+    padding-left: 20px;
+}
+.navbar ul{
+    list-style-type: none;
+    background-color: purple;
+    padding: 0px;
+    margin: 0px;
+    overflow: hidden;
+}
+.navbar a{
+    color: white;
+    text-decoration: none;
+    padding: 15px;
+    display: block;
+    text-align: center;
+}
+.navbar a:hover{
+    background-color: hsl(0, 0%, 10%);
+}
+.navbar li{
+    float: right;
+}
+
+h2 {
+    text-align: center;
+}
+
+.search {
+    margin: auto;
+    display: block;
+    width: 50%;
+    height: 50px;
+}
+
+::placeholder {
+    text-align: center;
+}
+
+button {
+    margin: auto;
+    display: block;
+    width: 20%;
+    padding: 10px;
+}

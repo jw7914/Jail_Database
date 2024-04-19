@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='./css/officer.css') }}">    
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='./css/home.css') }}">
+{% endblock %}
+{% block title %}
+Probation Officer Home
+{% endblock %}
+
+{% block body %}
+<div class="welcome">
+    <h1 class="welcome">Hello, {{ f_name }}!</h1>
+</div>
+<nav class="navbar">
+    <ul>
+        <li><a href="/logout/officer">Logout</a></li>
+    </ul>
+</nav>
+
+<div class="cards">
+    <div class="detail-card">
+        <h2>Officer Details</h2>
+        <ul class="details-list">
+            <li class="details-item">
+                <h3>Officer {{ f_name }} {{ l_name }}</h3>
+                <p><strong>Badge Number:</strong> {{ badge_number }}</p>
+                <p><strong>Precinct:</strong> {{ precinct }}</p>
+                <p><strong>Address:</strong> {{ officer_address }}</p>
+                <p><strong>Phone Number:</strong> {{ officer_phonenum }}</p>
+                <p><strong>Active Probationary Officer:</strong> {% if activity_status %}&#10004; {% else %} &#10005;{% endif %}</p>
+            </li>
+        </ul>
+    </div>
+    <div class="probationary">
+        <h2>Probationary</h2>
+        <ul class="details-list">
+            <li class="details-item">
+                <p><strong>Criminal ID:</strong> {{ criminal_id }}</p>
+                <p><strong>Criminal Name:</strong> {{ cf_name }} {{ cl_name }}</p>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="main officer-query">
+    <div class="main-query">
+        <h1 class="query-header">Inmate Search</h1>
+        <h3>Query by Case, Name, or Alias!</h3>
+        <form id="search-form" action="http://127.0.0.1:5000/" method="get">
+            <div>
+                <label for="case-num">
+                    Case Number:
+                </label>
+                <input type="number"
+                    id="case-num"
+                    name="case-num"
+                    placeholder="Enter case number">
+            </div>
+            <div class="name">
+                <label for="first-name">
+                    First Name:
+                </label>
+                <input type="text"
+                    id="inmate-first-name"
+                    name="inmate-first-name"
+                    placeholder="First name">
+            </div>
+            <div class="name">
+                <label for="last-name">
+                    Last Name:
+                </label>
+                <input type="text"
+                    id="inmate-last-name"
+                    name="inmate-last-name"
+                    placeholder="Last name">
+            </div>
+            <div>
+                <label for="alias">
+                    Alias:
+                </label>
+                <input type="text"
+                    id="alias"
+                    name="alias"
+                    placeholder="Enter alias">
+            </div>
+            <div class="wrap">
+                <button type="button" onclick="validateInmateSearchForm()">
+                    Search
+                </button>
+            </div>
+        </form>
+
+        <script>
+        function validateInmateSearchForm() {
+            var caseNum = document.getElementById("case-num").value;
+            var firstName = document.getElementById("inmate-first-name").value;
+            var lastName = document.getElementById("inmate-last-name").value;
+            var alias = document.getElementById("alias").value;
+
+            if (!caseNum && !firstName && !lastName && !alias) {
+                alert("Please enter either Case Number, First Name, Last Name, or Alias.");
+                return false;
+            }
+
+            document.getElementById("search-form").submit();
+        }
+        </script>
+    </div>
+
+    <div class="main-query">
+        <h1 class="query-header">Officer Search</h1>
+        <h3>Query by Name or Badge Number!</h3>
+        <form id="search-form" action="http://127.0.0.1:5000/" method="get">
+            <div class="name">
+                <label for="first-name">
+                    First Name:
+                </label>
+                <input type="text"
+                    id="officer-first-name"
+                    name="officer-first-name"
+                    placeholder="First name">
+            </div>
+            <div class="name">
+                <label for="last-name">
+                    Last Name:
+                </label>
+                <input type="text"
+                    id="officer-last-name"
+                    name="officer-last-name"
+                    placeholder="Last name">
+            </div>
+            <div>
+                <label for="badge-number">
+                    Alias:
+                </label>
+                <input type="number"
+                    id="badge-number"
+                    name="badge-number"
+                    placeholder="Enter Badge #">
+            </div>
+            <div class="wrap">
+                <button type="button" onclick="validateOfficerSearchForm()">
+                    Search
+                </button>
+            </div>
+        </form>
+
+        <script>
+        function validateOfficerSearchForm() {
+            var firstName = document.getElementById("officer-first-name").value;
+            var lastName = document.getElementById("officer-last-name").value;
+            var badgeNum = document.getElementById("badge-number").value;
+
+            if (!firstName && !lastName && !badgeNum) {
+                alert("Please enter either First Name, Last Name, or Badge Number.");
+                return false;
+            }
+
+            document.getElementById("search-form").submit();
+        }
+        </script>
+    </div>
+</div>
+
+
+{% endblock %}
