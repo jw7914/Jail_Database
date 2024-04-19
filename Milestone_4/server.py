@@ -105,7 +105,63 @@ def admin_auth(username, password):
 		return False
 
 def search_criminal(first_name, last_name, alias, case_id):
-	pass
+	if(case_id != ''):
+		if(first_name != '' and last_name == ''):
+			#Search function arguements in runstatment are what its running search by
+			if(alias == ''):
+				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s AND criminal_first = %s;"
+				df = runstatement(query, (case_id, first_name))
+			else:
+				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s AND criminal_first = %s AND alias = %s;"   
+				df = runstatement(query, (case_id, first_name, alias))
+		elif(first_name == '' and last_name != ''):
+			if alias == '':
+				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s AND criminal_last = %s;"
+				df = runstatement(query, (case_id, last_name))
+			else:
+				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s AND criminal_last = %s AND alias = %s;"
+				df = runstatement(query, (case_id, last_name, alias))
+		elif first_name != '' and last_name != '':
+			if alias == '':
+				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s AND criminal_first = %s AND criminal_last = %s;"
+				df = runstatement(query, (case_id, first_name, last_name))
+			else:
+				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s AND criminal_first = %s AND criminal_last = %s AND alias = %s;"   
+				df = runstatement(query, (case_id, first_name, last_name, alias))
+		else:
+			if alias == '':
+				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s;"
+				df = runstatement(query, (case_id))
+			else:
+				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s AND alias = %s;"   
+				df = runstatement(query, (case_id, alias))
+	else:
+		if first_name != '' and last_name == '':
+			if alias == '':
+				query = "SELECT * FROM criminal WHERE criminal_first = %s;"
+				df = runstatement(query, (first_name))
+			else:
+				query = "SELECT * FROM criminal WHERE criminal_first = %s AND alias = %s;"   
+				df = runstatement(query, (first_name, alias))
+		elif first_name == '' and last_name != '':
+			if alias == '':
+				query = "SELECT * FROM criminal WHERE criminal_last = %s;"
+				df = runstatement(query, (last_name))
+			else:
+				query = "SELECT * FROM criminal WHERE criminal_last = %s AND alias = %s;"
+				df = runstatement(query, (last_name, alias))
+		elif first_name != '' and last_name != '':
+			if alias == '':
+				query = "SELECT * FROM criminal WHERE criminal_first = %s AND criminal_last = %s;"
+				df = runstatement(query, (first_name, last_name))
+			else:
+				query = "SELECT * FROM criminal criminal_first = %s AND criminal_last = %s AND alias = %s;"   
+				df = runstatement(query, (first_name, last_name, alias))
+		else:
+			if alias != '':
+				query = "SELECT * FROM criminal WHERE alias = %s;"
+				df = runstatement(query, (alias))
+	return df
 
 def search_officer(first_name, last_name, badge_number):
 	pass
@@ -136,63 +192,8 @@ def home():
 			criminal_phonenum_list = []
 			violent_list = []
 			probation_list = []
-			if(case_id != ''):
-				if(first_name != '' and last_name == ''):
-					#Search function arguements in runstatment are what its running search by
-					if(alias == ''):
-						query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s AND criminal_first = %s;"
-						df = runstatement(query, (case_id, first_name))
-					else:
-						query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s AND criminal_first = %s AND alias = %s;"   
-						df = runstatement(query, (case_id, first_name, alias))
-				elif(first_name == '' and last_name != ''):
-					if alias == '':
-						query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s AND criminal_last = %s;"
-						df = runstatement(query, (case_id, last_name))
-					else:
-						query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s AND criminal_last = %s AND alias = %s;"
-						df = runstatement(query, (case_id, last_name, alias))
-				elif first_name != '' and last_name != '':
-					if alias == '':
-						query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s AND criminal_first = %s AND criminal_last = %s;"
-						df = runstatement(query, (case_id, first_name, last_name))
-					else:
-						query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s AND criminal_first = %s AND criminal_last = %s AND alias = %s;"   
-						df = runstatement(query, (case_id, first_name, last_name, alias))
-				else:
-					if alias == '':
-						query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s;"
-						df = runstatement(query, (case_id))
-					else:
-						query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s AND alias = %s;"   
-						df = runstatement(query, (case_id, alias))
-			else:
-				if first_name != '' and last_name == '':
-					if alias == '':
-						query = "SELECT * FROM criminal WHERE criminal_first = %s;"
-						df = runstatement(query, (first_name))
-					else:
-						query = "SELECT * FROM criminal WHERE criminal_first = %s AND alias = %s;"   
-						df = runstatement(query, (first_name, alias))
-				elif first_name == '' and last_name != '':
-					if alias == '':
-						query = "SELECT * FROM criminal WHERE criminal_last = %s;"
-						df = runstatement(query, (last_name))
-					else:
-						query = "SELECT * FROM criminal WHERE criminal_last = %s AND alias = %s;"
-						df = runstatement(query, (last_name, alias))
-				elif first_name != '' and last_name != '':
-					if alias == '':
-						query = "SELECT * FROM criminal WHERE criminal_first = %s AND criminal_last = %s;"
-						df = runstatement(query, (first_name, last_name))
-					else:
-						query = "SELECT * FROM criminal criminal_first = %s AND criminal_last = %s AND alias = %s;"   
-						df = runstatement(query, (first_name, last_name, alias))
-				else:
-					if alias != '':
-						query = "SELECT * FROM criminal WHERE alias = %s;"
-						df = runstatement(query, (alias))
-
+			
+			df = search_criminal(first_name, last_name, alias, case_id)
 			# Populate lists from DataFrame
 			for i, j in df.iterrows():
 				name_list.append(j['criminal_first'] + ' ' + j['criminal_last'])
@@ -320,7 +321,31 @@ def admin_login():
 
 @app.route('/admin')
 def admin():
-	return f"Admin Page"
+	if 'admin' in session:
+		query = "SELECT username, badge_number FROM users"
+		badge_numbers = []
+		usernames = []
+		df = runstatement(query)
+		for i, j in df.iterrows():
+			badge_numbers.append(j['badge_number'])
+			usernames.append(j['username'])
+		zipped_data = zip(badge_numbers, usernames)
+		return render_template('admin.html', zipped_data=zipped_data)
+	else:
+		redirect(url_for('home'))
+
+@app.route('/delete/<badge_num>', methods=["GET"])
+def delete_user(badge_num):
+	if 'admin' in session:
+		cursor = conn.cursor()
+		query = "DELETE FROM users WHERE badge_number = %s;"
+		cursor.execute(query, (badge_num))
+		conn.commit()
+		cursor.close()
+		return redirect(url_for('admin')) 
+	else:
+		return "Unauthorized", 401
+
 
 @app.route('/test', methods=['POST', 'GET'])
 def test():
