@@ -5,9 +5,6 @@ import pandas as PD
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 
-# Only for testing for xammp doesn't matter will remove later
-print("Content-type: text/html\n")
-
 #Initialize the app from Flask
 app = Flask(__name__)
 #Doesn't matter just used for flask verification
