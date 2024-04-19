@@ -1,0 +1,4 @@
+Install ngrok
+Set up port to tcp and connect to 3306
+ngrok start --all
+Change the host and port in the connection in python
