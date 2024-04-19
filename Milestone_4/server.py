@@ -1,6 +1,3 @@
-#!/opt/homebrew/var/www/Jail_Database/.venv/bin/python
-# <---- Shebang remove when running code and put back when pushing
-
 #Import Libraries
 from flask import Flask, render_template, request, session, url_for, redirect, flash
 import pymysql.cursors
@@ -19,10 +16,11 @@ app.secret_key = 'jason'
 #Configure MySQL and connect to certain user defualt too root user
 def connectDB(u = 'root', pw = ''):
 	try:
-		conn = pymysql.connect(host='localhost',
+		conn = pymysql.connect(host='0.tcp.ngrok.io',
 							user=u,
 							password=pw,
 							db='jail',
+							port=14572,
 							charset='utf8mb4',
 							cursorclass=pymysql.cursors.DictCursor)
 		print("==================\nConnected to the database!\n==================")
