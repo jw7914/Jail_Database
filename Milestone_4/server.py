@@ -104,6 +104,11 @@ def admin_auth(username, password):
 	else: 
 		return False
 
+def search_criminal(first_name, last_name, alias, case_id):
+	pass
+
+def search_officer(first_name, last_name, badge_number):
+	pass
 
 #=============================================================== Seperate functions and routes
 
