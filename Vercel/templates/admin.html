@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}
+Admin Page
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='./css/admin.css') }}">    
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Users List</h1>
+        <form action="/logout/admin" method="post">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>Badge Number</th>
+                    <th>Username</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for badge_num, username in zipped_data %}
+                    <tr>
+                        <td>{{ badge_num }}</td>
+                        <td>{{ username }}</td>
+                        <td> 
+                            <form action="/delete/{{ badge_num }}" method="get">
+                                <button type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

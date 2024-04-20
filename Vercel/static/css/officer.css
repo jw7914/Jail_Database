@@ -1,0 +1,136 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: sans-serif;
+    line-height: 1.5;
+    background: #f3f3f3;
+    margin: 0;
+}
+
+/* Welcome message banner */
+.welcome {
+    background-color: #ffffff00;
+    border-radius: 15px;
+    width: 100%;
+    text-align: left;
+    margin-left: 75px;
+    padding: 20px;
+}
+
+welcome {
+    text-align: center;
+    float: left;
+    margin-bottom: 30px;
+    color: purple;
+}
+
+/* Navbar */
+.navbar ul{
+    list-style-type: none;
+    background-color: #f3f3f3;
+    padding: 0px;
+    margin: 0px;
+    overflow: hidden;
+}
+.navbar a{
+    color: purple;
+    text-decoration: none;
+    padding: 15px;
+    display: block;
+    text-align: center;
+}
+.navbar a:hover{
+    background-color: lightblue;
+}
+.navbar li{
+    float: left;
+}
+
+.query-header {
+    width : "100%";
+}
+
+.cards {
+    display: flex;
+    flex-direction: row;
+    width: 75%;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Officer Details Box (top left) */
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+}
+.detail-card {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    padding: 10px 20px;
+    transition: transform 0.2s;
+    width: 50%;
+    text-align: center;
+    margin-right: 5px;
+}
+
+.details-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    width: 100%; /* Full width */
+}
+
+.details-item {
+    border-bottom: 1px solid #e0e0e0;
+    padding: 20px 0;
+    width: 100%; /* Full width */
+    box-sizing: border-box; /* Include padding in width */
+    text-align: left; /* Reset text alignment */
+}
+
+.details-item:last-child {
+    border-bottom: none;
+}
+
+.details-item h3 {
+    margin-top: 0;
+    color: #007BFF;
+    border-bottom: 1px solid #333;
+}
+
+.details-item p {
+    margin: 10px 0;
+    color: #666;
+}
+
+.details-item strong {
+    color: #333;
+}
+
+/* Probationaries */
+.probationary {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    padding: 10px 20px;
+    transition: transform 0.2s;
+    width: 50%;
+    text-align: center;
+    margin-left: 5px;
+}
+
+/* Arrests */
+.arrest {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    padding: 10px 20px;
+    transition: transform 0.2s;
+    width: 50%;
+    text-align: center;
+    margin-left: 5px;
+}

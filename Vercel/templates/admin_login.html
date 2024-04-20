@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='./css/register.css') }}">    
+{% endblock %}
+
+{% block title %}
+Admin Login
+{% endblock %}
+{% block body %}
+<nav class="navbar">
+    <ul>
+        <li><a href="/">Home</a></li>
+    </ul>
+</nav>
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+{% endwith %}
+<div class="govt-login">
+    <h1>Admin Login</h1>
+    <h3>Enter your login credentials</h3>
+    <form id="adminlogin-form" action="{{ url_for('admin_login') }}" method="post">
+        <label for="admin_username">
+            Username:
+        </label>
+        <input type="text"
+               id="admin_username"
+               name="admin_username"
+               placeholder="Enter your Username" required>
+
+        <label for="admin_password">
+            Password:
+        </label>
+        <input type="password"
+               id="admin_password"
+               name="admin_password"
+               placeholder="Enter your Password" required>
+        <div class="wrap">
+            <button type="button" onclick="validateLoginForm()">
+                Login
+            </button>
+        </div>
+    </form>
+
+    <script>
+    function validateLoginForm() {
+        var username = document.getElementById("admin_username").value;
+        var password = document.getElementById("admin_password").value;
+
+        if (!username || !password) {
+            alert("Please enter Username and Password");
+            return false;
+        }
+
+        document.getElementById("adminlogin-form").submit();
+    }
+    </script>
+</div>    
+{% endblock %}

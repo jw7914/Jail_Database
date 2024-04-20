@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='./css/register.css') }}">    
+{% endblock %}
+
+
+{% block title %}
+Government Register 
+{% endblock %}
+
+{% block body %}
+<nav class="navbar">
+    <ul>
+        <li><a href="/">Home</a></li>
+    </ul>
+</nav>
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+{% endwith %}
+<div class="govt-login">
+    <h1>Government Register</h1>
+    <h3>Enter your registration credentials</h3>
+    <form id="register-form" action="{{ url_for('register_route') }}" method="post">
+        <label for="register_username">
+            Username:
+        </label>
+        <input type="text"
+               id="register_username"
+               name="register_username"
+               placeholder="Enter your Username" required>
+
+        <label for="register_password">
+            Password:
+        </label>
+        <input type="password"
+               id="register_password"
+               name="register_password"
+               placeholder="Enter your Password" required>
+        <label for="register_id">
+            Badge Number:
+        </label>
+        <input type="text"
+                id="register_id"
+                name="register_id"
+                placeholder="Enter your Badge Number" required>
+        <div class="wrap">
+            <button type="button" onclick="validateLoginForm()">
+                Register
+            </button>
+        </div>
+    </form>
+
+    <script>
+    function validateLoginForm() {
+        var username = document.getElementById("register_username").value;
+        var password = document.getElementById("register_password").value;
+        var id = document.getElementById("register_id").value;
+
+        if (!username || !password || !id) {
+            alert("Please enter Username, Password, and your Badge Number");
+            return false;
+        }
+
+        document.getElementById("register-form").submit();
+    }
+    </script>
+</div>    
+{% endblock %}

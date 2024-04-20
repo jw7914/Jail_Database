@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='./css/error.css') }}">    
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <div class="error-container">
+        <h1>Error: {% block error_type %} {% endblock %}</h1>
+        <p>{% block error_message %} {% endblock %}</p>
+        <p><a href="/">Home Page</a></p>
+    </div>
+</body>
+</html>
