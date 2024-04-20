@@ -11,12 +11,19 @@ Support existing users??? -- Jason doing already with sessions? Needa figure out
 -- Kinda dealt with basically just need to do commit whenever an user does an action which is done we are good
 
 Program front end of the wireframes
-    Officer Pages x2 : Rielle
     Officer probation page done - need to implement search functionality
     Officer arrest page needs to be implemented - logic for redirection is implemented
+    Crime list page
 
 
 Maybe write more functions to clean up querys within the python file?
+    trigger to update files of payment
+    edit criminals
+    edit officers
+    delete criminals
+    delete officers
+    insert criminals
+    insert officers
 
 ----
 Questions:
