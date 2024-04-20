@@ -12,7 +12,7 @@ Support existing users??? -- Jason doing already with sessions? Needa figure out
 
 Program front end of the wireframes
     Officer probation page done - need to implement search functionality
-    Officer arrest page needs to be implemented - logic for redirection is implemented
+    Officer arrest page done - logic for redirection is implemented
     Crime list page
 
 
