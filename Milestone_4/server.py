@@ -358,3 +358,13 @@ def test():
 
 if __name__ == "__main__":
 	app.run('127.0.0.1', 5000, debug = True)
+
+
+@app.route('/crimes', methods=['POST', 'GET'])
+def display_crimes():
+	cursor = conn.cursor()
+	query = "SELECT * FROM crime;"
+	df = runstatement(query)
+	table = df.to_html(index=False)
+
+	return('crimes.html', table)
