@@ -1,2 +1,21 @@
 {% extends "base.html" %}
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='./css/search.css') }}">
+{% endblock %}
 
+{% block title %}
+Crime List
+{% endblock %}
+
+{% block body %}
+<nav class="navbar">
+    <ul>
+        <li><a href="/">Home</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <h1>Crimes List</h1>
+    {{ table }}
+</div>
+{% endblock %}
