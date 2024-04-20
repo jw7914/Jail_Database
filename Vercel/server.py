@@ -1,4 +1,3 @@
-#! /Applications/XAMPP/xamppfiles/htdocs/Jail_Database/env/bin/python
 #Import Libraries
 from flask import Flask, render_template, request, session, url_for, redirect, flash
 import pymysql.cursors
@@ -14,8 +13,8 @@ app.secret_key = 'jason'
 #Configure MySQL and connect to certain user defualt too root user
 def connectDB(u = 'root', pw = ''):
 	try:
-		conn = pymysql.connect(host='localhost',
-							user=u,
+		conn = pymysql.connect(host='0.tcp.ngrok.io',
+						    port=19314,
 							password=pw,
 							db='jail',
 							charset='utf8mb4',
