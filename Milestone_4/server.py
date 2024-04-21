@@ -283,8 +283,7 @@ def officer_home(badge_number):
                 probation.append(j['probation_status'])
                 criminal_phonenum.append(j['criminal_phonenum'])
             if (len(name) == 0):
-                print("OOPIE")
-                return redirect(url_for("officer_home", badge_number=badge_number))
+                return render_template ('inmate_search_results.html', empty=True)
             else:
                 # Zip the lists together
                 zipped_data = zip(name, criminal_id, alias, criminal_address, criminal_phonenum, violent, probation)
@@ -312,8 +311,7 @@ def officer_home(badge_number):
                 officer_type.append(j['officer_type'])
                 officer_address.append(j['officer_address'])
             if (len(name) == 0):
-                print("OOPIE")
-                return redirect(url_for("officer_home", badge_number=badge_number))
+                return render_template ('inmate_search_results.html', empty=True)
             else:
                 # Zip the lists together
                 zipped_data = zip(badge_number, name, precinct, officer_phonenum, activity_status, officer_type, officer_address)
