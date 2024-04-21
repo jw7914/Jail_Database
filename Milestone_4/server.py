@@ -32,7 +32,7 @@ conn = connectDB()
 
 #Default if only query is passed then it will execute with root user with no arguments
 #Runs query and returns values in a Dataframe for traversing purposes
-def runstatement(query, arguments=None):
+def run_statement(query, arguments=None):
 	cursor = conn.cursor()
 	if arguments == None:
 		cursor.execute(query)
@@ -104,67 +104,50 @@ def admin_auth(username, password):
 	else: 
 		return False
 
-def search_criminal(first_name, last_name, alias, case_id):
-	if(case_id != ''):
-		if(first_name != '' and last_name == ''):
-			#Search function arguements in runstatment are what its running search by
-			if(alias == ''):
-				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s AND criminal_first = %s;"
-				df = runstatement(query, (case_id, first_name))
-			else:
-				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s AND criminal_first = %s AND alias = %s;"   
-				df = runstatement(query, (case_id, first_name, alias))
-		elif(first_name == '' and last_name != ''):
-			if alias == '':
-				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s AND criminal_last = %s;"
-				df = runstatement(query, (case_id, last_name))
-			else:
-				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s AND criminal_last = %s AND alias = %s;"
-				df = runstatement(query, (case_id, last_name, alias))
-		elif first_name != '' and last_name != '':
-			if alias == '':
-				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s AND criminal_first = %s AND criminal_last = %s;"
-				df = runstatement(query, (case_id, first_name, last_name))
-			else:
-				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s AND criminal_first = %s AND criminal_last = %s AND alias = %s;"   
-				df = runstatement(query, (case_id, first_name, last_name, alias))
-		else:
-			if alias == '':
-				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s;"
-				df = runstatement(query, (case_id))
-			else:
-				query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE crime_case.case_id = %s AND alias = %s;"   
-				df = runstatement(query, (case_id, alias))
-	else:
-		if first_name != '' and last_name == '':
-			if alias == '':
-				query = "SELECT * FROM criminal WHERE criminal_first = %s;"
-				df = runstatement(query, (first_name))
-			else:
-				query = "SELECT * FROM criminal WHERE criminal_first = %s AND alias = %s;"   
-				df = runstatement(query, (first_name, alias))
-		elif first_name == '' and last_name != '':
-			if alias == '':
-				query = "SELECT * FROM criminal WHERE criminal_last = %s;"
-				df = runstatement(query, (last_name))
-			else:
-				query = "SELECT * FROM criminal WHERE criminal_last = %s AND alias = %s;"
-				df = runstatement(query, (last_name, alias))
-		elif first_name != '' and last_name != '':
-			if alias == '':
-				query = "SELECT * FROM criminal WHERE criminal_first = %s AND criminal_last = %s;"
-				df = runstatement(query, (first_name, last_name))
-			else:
-				query = "SELECT * FROM criminal criminal_first = %s AND criminal_last = %s AND alias = %s;"   
-				df = runstatement(query, (first_name, last_name, alias))
-		else:
-			if alias != '':
-				query = "SELECT * FROM criminal WHERE alias = %s;"
-				df = runstatement(query, (alias))
-	return df
+def search_criminal(first_name="", last_name="", alias="", case_id=""):
+    print("RECEIVED:", first_name, "|", last_name, "|", alias, "|", case_id)
+    df = PD.DataFrame()
+    query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE"
+    params = []
+    if (case_id != ""):
+        query += " crime_case.case_id = %s"
+        params.append(case_id)
+    if (first_name != ""):
+        query += " AND criminal.criminal_first = %s" if len(params) > 0 else " criminal.criminal_first = %s"
+        params.append(first_name)
+    if (last_name != ""):
+        query += " AND criminal.criminal_last = %s" if len(params) > 0 else " criminal.criminal_last = %s"
+        params.append(last_name)
+    if (alias != ""):
+        query += " AND criminal.alias = %s" if len(params) > 0 else " criminal.criminal_alias = %s"
+        params.append(alias)
+    if len(params) == 0:
+        print("ERROR")
+        return df
+
+    query += ";"
+    df = run_statement(query, tuple(params))
+    return df
 
 def search_officer(first_name, last_name, badge_number):
-	pass
+    df = PD.DataFrame()
+    query = "SELECT * FROM officer WHERE"
+    params = []
+    if badge_number != "":
+        query += " badge_number = %s"
+        params.append(badge_number)
+    if first_name != "":
+        query += " AND officer_first = %s" if len(params) > 0 else " officer_first = %s"
+        params.append(first_name)
+    if last_name != "":
+        query += " AND officer_last = %s" if len(params) > 0 else " officer_last = %s"
+        params.append(last_name)
+    if len(params) == 0:
+        print("ERROR")
+        return df
+    query += ";"
+    df = run_statement(query, tuple(params))
+    return df
 
 #=============================================================== Seperate functions and routes
 
@@ -204,12 +187,12 @@ def home():
 				probation_list.append(j['probation_status'])
 				criminal_phonenum_list.append(j['criminal_phonenum'])
 			if (len(name_list) == 0):
-				return render_template ('search_results.html', empty=True)
+				return render_template ('inmate_search_results.html', empty=True)
 			else:
 				# Zip the lists together
 				zipped_data = zip(name_list, criminal_id_list, alias_list, criminal_address_list, criminal_phonenum_list, violent_list, probation_list)
 				# Render the template with zipped_data
-				return render_template('search_results.html', zipped_data=zipped_data)
+				return render_template('inmate_search_results.html', zipped_data=zipped_data)
 	elif request.method == 'POST': #If logging in
 		username = request.form['username']
 		password = request.form['password']
@@ -244,55 +227,126 @@ def register_route():
 
 @app.route("/<badge_number>", methods=['POST', 'GET'])
 def officer_home(badge_number):
-    if "badge_number" in session:
-        session_auth = str(session['badge_number'])
-        if session_auth == badge_number:
-            cursor = conn.cursor()
-            query = "SELECT * FROM officer WHERE officer.badge_number = %s;"
-            cursor.execute(query, (badge_number))
-            result = cursor.fetchone()
-            officer_type = result['officer_type']
-            if officer_type == 'Probation':
-                query = "SELECT * FROM officer INNER JOIN PROBATION ON officer.badge_number = probation.badge_number WHERE probation.badge_number = %s AND officer.badge_number = %s;"
-                cursor.execute(query, (badge_number, badge_number))
-                result = cursor.fetchone()
-                f_name = result['officer_first']
-                l_name = result['officer_last']
-                precinct=result['precinct']
-                officer_address = result['officer_address']
-                officer_phonenum = result['officer_phonenum']
-                activity_status = result['activity_status']
-                criminal_id = result['criminal_id']
-                query = "SELECT criminal.criminal_first, criminal.criminal_last FROM criminal INNER JOIN probation ON probation.criminal_id  = criminal.criminal_id WHERE probation.criminal_id = %s AND criminal.criminal_id = %s;"
-                cursor.execute(query, (criminal_id, criminal_id))
-                result = cursor.fetchone()
-                cf_name = result['criminal_first']
-                cl_name = result['criminal_last']
-                return render_template("private_probation.html", f_name=f_name, l_name=l_name, badge_number=badge_number, precinct=precinct, officer_address=officer_address, officer_phonenum=officer_phonenum, activity_status=activity_status, criminal_id=criminal_id, cf_name=cf_name, cl_name=cl_name)
-            elif officer_type == 'Arrest':
-                query = "SELECT * FROM officer INNER JOIN ARREST ON officer.badge_number = arrest.badge_number WHERE arrest.badge_number = %s AND officer.badge_number = %s;"
-                cursor.execute(query, (badge_number, badge_number))
-                result = cursor.fetchone()
-                f_name = result['officer_first']
-                l_name = result['officer_last']
-                precinct=result['precinct']
-                officer_address = result['officer_address']
-                officer_phonenum = result['officer_phonenum']
-                activity_status = result['activity_status']
-                criminal_id = result['criminal_id']
-                crime_code = result['crime_code']
-                query = "SELECT criminal.criminal_first, criminal.criminal_last FROM criminal INNER JOIN arrest ON arrest.criminal_id = criminal.criminal_id WHERE arrest.criminal_id = %s AND criminal.criminal_id = %s;"
-                cursor.execute(query, (criminal_id, criminal_id))
-                result = cursor.fetchone()
-                cf_name = result['criminal_first']
-                cl_name = result['criminal_last']
-                return render_template("private_arrest.html", f_name=f_name, l_name=l_name, badge_number=badge_number, precinct=precinct, officer_address=officer_address, officer_phonenum=officer_phonenum, activity_status=activity_status, criminal_id=criminal_id, cf_name=cf_name, cl_name=cl_name)
-            else:
-                return render_template('error_access.html')
-        else:
-            return render_template('error_access.html')
-    else:
+    officer_types = {
+        "Probation" : {
+            "badge_check" : " PROBATION ON officer.badge_number = probation.badge_number WHERE probation.badge_number = %s AND officer.badge_number = %s;",
+            "criminal_query" : "SELECT criminal.criminal_first, criminal.criminal_last FROM criminal INNER JOIN probation ON probation.criminal_id  = criminal.criminal_id WHERE probation.criminal_id = %s AND criminal.criminal_id = %s;",
+            "officer_site" : "private_probation.html"
+        },
+        "Arrest" : {
+            "badge_check" : " ARREST ON officer.badge_number = arrest.badge_number WHERE arrest.badge_number = %s AND officer.badge_number = %s;",
+            "criminal_query" : "SELECT criminal.criminal_first, criminal.criminal_last FROM criminal INNER JOIN arrest ON arrest.criminal_id = criminal.criminal_id WHERE arrest.criminal_id = %s AND criminal.criminal_id = %s;",
+            "officer_site" : "private_arrest.html"
+        }
+    }
+    if "badge_number" not in session:
         return redirect(url_for('home'))
+    session_auth = str(session['badge_number'])
+    if session_auth != badge_number:
+        return render_template('error_access.html')
+
+    inmate_search_fields = ['inmate-first-name','inmate-last-name', 'alias', 'case-num']
+    officer_search_fields = ['officer-first-name', 'officer-last-name', 'badge-number']
+
+    search_type = ""
+    if request.method == 'POST':
+        print("FORM:", request.form)
+        for field in inmate_search_fields:
+            if field in request.form:
+                search_type = "inmate"
+        for field in officer_search_fields:
+            if field in request.form:
+                search_type = "officer"
+        if search_type == "":
+            return
+
+        search_args = []
+        if search_type == "inmate":
+            search_args = list([request.form[field] if request.form[field] != "" else "" for field in inmate_search_fields])
+            df = search_criminal(*search_args)
+			# Initialize lists to store data
+            name_list = []
+            criminal_id_list = []
+            alias_list = []
+            criminal_address_list = []
+            criminal_phonenum_list = []
+            violent_list = []
+            probation_list = []
+
+            # Populate lists from DataFrame
+            for i, j in df.iterrows():
+                name_list.append(j['criminal_first'] + ' ' + j['criminal_last'])
+                alias_list.append(j['alias'])
+                criminal_id_list.append(j['criminal_id'])
+                criminal_address_list.append(j['criminal_address'])
+                violent_list.append(j['violent_offender_stat'])
+                probation_list.append(j['probation_status'])
+                criminal_phonenum_list.append(j['criminal_phonenum'])
+            if (len(name_list) == 0):
+                print("OOPIE")
+                return redirect(url_for("officer_home", badge_number=badge_number))
+            else:
+                # Zip the lists together
+                zipped_data = zip(name_list, criminal_id_list, alias_list, criminal_address_list, criminal_phonenum_list, violent_list, probation_list)
+                return render_template('inmate_search_results.html', zipped_data=zipped_data)
+
+        if search_type == "officer":
+            search_args = list([request.form[field] if request.form[field] != "" else "" for field in officer_search_fields])
+            df = search_officer(*search_args)
+            # Initialize lists to store data
+            badge_number_list = []
+            name_list = []
+            precinct_list = []
+            officer_phonenum_list = []
+            activity_status_list = []
+            officer_type_list = []
+            officer_address_list = []
+
+            # Populate lists from DataFrame
+            for i, j in df.iterrows():
+                badge_number_list.append(j['badge_number'])
+                name_list.append(j['officer_first'] + ' ' + j['officer_last'])
+                precinct_list.append(j['precinct'])
+                officer_phonenum_list.append(j['officer_phonenum'])
+                activity_status_list.append(j['activity_status'])
+                officer_type_list.append(j['officer_type'])
+                officer_address_list.append(j['officer_address'])
+            if (len(name_list) == 0):
+                print("OOPIE")
+                return redirect(url_for("officer_home", badge_number=badge_number))
+            else:
+                # Zip the lists together
+                zipped_data = zip(badge_number_list, name_list, precinct_list, officer_phonenum_list, activity_status_list, officer_type_list, officer_address_list)
+                # Render the template with zipped_data
+                return render_template('officer_search_results.html', zipped_data=zipped_data)
+
+    cursor = conn.cursor()
+    query = "SELECT * FROM officer WHERE officer.badge_number = %s;"
+    cursor.execute(query, (badge_number))
+    result = cursor.fetchone()
+    officer_type = result['officer_type']
+
+    query = "SELECT * FROM officer INNER JOIN "
+    query += officer_types[officer_type]["badge_check"]
+    cursor.execute(query, (badge_number, badge_number))
+    result = cursor.fetchone()
+    f_name = result['officer_first']
+    l_name = result['officer_last']
+    precinct=result['precinct']
+    officer_address = result['officer_address']
+    officer_phonenum = result['officer_phonenum']
+    activity_status = result['activity_status']
+    criminal_id = result['criminal_id']
+    if officer_type == 'arrest':
+        crime_code = result['crime_code']
+    query = officer_types[officer_type]["criminal_query"]
+    cursor.execute(query, (criminal_id, criminal_id))
+    result = cursor.fetchone()
+    cf_name = result['criminal_first']
+    cl_name = result['criminal_last']
+    return render_template(officer_types[officer_type]["officer_site"] ,f_name=f_name, l_name=l_name, badge_number=badge_number, precinct=precinct, officer_address=officer_address, officer_phonenum=officer_phonenum, activity_status=activity_status, criminal_id=criminal_id, cf_name=cf_name, cl_name=cl_name)
+
+
 
 
 
@@ -325,7 +379,7 @@ def admin():
 		query = "SELECT username, badge_number FROM users"
 		badge_numbers = []
 		usernames = []
-		df = runstatement(query)
+		df = run_statement(query)
 		for i, j in df.iterrows():
 			badge_numbers.append(j['badge_number'])
 			usernames.append(j['username'])
@@ -350,7 +404,7 @@ def delete_user(badge_num):
 @app.route('/test', methods=['POST', 'GET'])
 def test():
 	first_name = request.get_data
-	df = runstatement("SELECT * FROM CRIMINAL;")
+	df = run_statement("SELECT * FROM CRIMINAL;")
 	criminal_ids = []
 	for i, j in df.iterrows():
 		criminal_ids.append(j['criminal_id'])
@@ -364,7 +418,7 @@ if __name__ == "__main__":
 def display_crimes():
 	cursor = conn.cursor()
 	query = "SELECT * FROM crime;"
-	df = runstatement(query)
+	df = run_statement(query)
 	table = df.to_html(index=False)
 
 	return('crimes.html', table)

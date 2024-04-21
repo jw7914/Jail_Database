@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}
+Officer Search Results
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='./css/search.css') }}">    
+{% endblock %}
+{% block body %}
+<nav class="navbar">
+    <ul>
+        <li><a href="/">Home</a></li>
+    </ul>
+</nav>
+{% if empty %}
+    <h1>No Results Found</h1>
+{% else %}
+    <div class="container">
+        <h1>Search Results</h1>
+        {% for badge_number, name, precinct, officer_phonenum, activity_status, officer_type, officer_address in zipped_data  %}
+        <ul class="results-list">
+                <li class="result-item">
+                    <h2>{{ name }}</h2>
+                    <p><strong>Badge Number:</strong> {{ badge_number }}</p>
+                    <p><strong>Precinct:</strong> {{ precinct }}</p>
+                    <p><strong>Phone Number:</strong> {{ officer_phonenum }}</p>
+                    <p><strong>Officer Address:</strong> {{ officer_address }}</p>
+                    <p><strong>Activity Status:</strong> {{ activity_status }}</p>
+                    <p><strong>Officer Type:</strong> {{ officer_type}}</p>
+                </li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+    
+{% endblock %}
