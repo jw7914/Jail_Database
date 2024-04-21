@@ -381,7 +381,7 @@ VALUES
 -- VIOLATION table entries
 INSERT INTO VIOLATION (violation_code, criminal_id, violation_description) 
 VALUES
-('VC12345', 1, 'Theft violation'),
+('VC12325', 1, 'Theft violation'),
 ('VC23456', 2, 'Assault violation'),
 ('VC34567', 3, 'Burglary violation'),
 ('VC45678', 4, 'Vandalism violation'),
