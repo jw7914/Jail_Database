@@ -1,6 +1,6 @@
 #! /Applications/XAMPP/xamppfiles/htdocs/Jail_Database/env/bin/python
 #Import Libraries
-from flask import Flask, render_template, request, session, url_for, redirect, flash
+from flask import Flask, render_template, request, session, url_for, redirect, flash, jsonify
 import pymysql.cursors
 import pandas as PD
 from werkzeug.security import generate_password_hash
@@ -60,7 +60,7 @@ def register_auth(username, id):
 		cursor.close()
 		return(("User already exists", False))
 	cursor.close()
-	#Check if they are an officer 
+	#Check if they are an officer
 	cursor = conn.cursor()
 	query = "SELECT * FROM officer WHERE badge_number = %s;"
 	cursor.execute(query, (id))
@@ -101,7 +101,7 @@ def admin_auth(username, password):
 	cursor.close()
 	if admin:
 		return True
-	else: 
+	else:
 		return False
 
 def search_criminal(first_name="", last_name="", alias="", case_id=""):
@@ -175,7 +175,7 @@ def home():
 			criminal_phonenum = []
 			violent = []
 			probation = []
-			
+
 			df = search_criminal(first_name_input, last_name_input, alias_input, case_id_input)
 			# Populate lists from DataFrame
 			for i, j in df.iterrows():
@@ -206,7 +206,7 @@ def home():
 		else:
 			return render_template('error_cred.html')
 	else:
-		return render_template('home.html')		
+		return render_template('home.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register_route():
@@ -571,6 +571,32 @@ def delete_criminal(criminal_id):
 		return redirect(url_for('admin_criminal'))
 	else:
 		return "Unauthorized", 401
+
+@app.route('/insert_officer', methods=["POST"])
+def insert_officer():
+    if 'admin' not in session:
+        return "Unauthorized", 401
+    if request.method != "POST":
+        return redirect(url_for('admin_officer'))
+
+    data = request.json
+    badge_number = data['fields']['badge_number']
+    first_name = data['fields']['first_name']
+    last_name = data['fields']['last_name']
+    precinct = data['fields']['precinct']
+    phone_number = data['fields']['phone_number']
+    status = data['fields']['status']
+    type_ = data['fields']['type']
+    address = data['fields']['address']
+    cursor = conn.cursor()
+
+    query = "INSERT INTO officer (badge_number, officer_first, officer_last, precinct, officer_phonenum, activity_status, officer_type, officer_address) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+    cursor.execute(query, (badge_number, first_name, last_name, precinct, phone_number, status, type_, address))
+    conn.commit()
+    cursor.close()
+    response = jsonify({"message": "Insert Succesful"})
+    return redirect(url_for('admin_officer'))
+
 
 if __name__ == "__main__":
 	app.run('127.0.0.1', 5000, debug = True)

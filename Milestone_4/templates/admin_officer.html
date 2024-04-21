@@ -15,12 +15,10 @@ Admin Page
     <a href="{{ url_for('admin_officer') }}">Officer</a>
     <a href="{{ url_for('admin_criminal') }}">Criminal</a>
 </div>
+
 <div class="container">
     <h1>Officers List</h1>
-    <form action="{{ url_for('admin_logout')}}" method="post">
-        <button type="submit" class="logout-btn">Insert</button>
-    </form>
-    <table>
+    <table id="officer-table">
         <thead>
             <tr>
                 <th>Badge Number</th>
@@ -31,7 +29,8 @@ Admin Page
                 <th>Status</th>
                 <th>Type</th>
                 <th>Address</th>
-                <th>Delete</th>
+                <th></th>
+                <th></th>
             </tr>
         </thead>
         {% if empty %}
@@ -49,7 +48,12 @@ Admin Page
                     <td>{{ status }}</td>
                     <td>{{ type }}</td>
                     <td>{{ address }}</td>
-                    <td> 
+                    <td>
+                        <form action="{{ url_for('delete_officer', badge_number=badge_num) }}" method="get">
+                            <button type="submit">Edit</button>
+                        </form>
+                    </td>
+                    <td>
                         <form action="{{ url_for('delete_officer', badge_number=badge_num) }}" method="get">
                             <button type="submit">Delete</button>
                         </form>
@@ -58,6 +62,57 @@ Admin Page
             {% endfor %}
         </tbody>
         {% endif %}
+
+        <tr id="empty-row">
+            <td><input type="number" id="insert-badge-num"></td>
+            <td><input type="text" id="insert-first-name"></td>
+            <td><input type="text" id="insert-last-name"></td>
+            <td><input type="number" id="insert-precinct"></td>
+            <td><input type="text" id="insert-phone-number"></td>
+            <td><input type="text" id="insert-status"></td>
+            <td><input type="text" id="insert-type"></td>
+            <td><input type="text" id="insert-address"></td>
+        </tr>
     </table>
+
+
+    <button id="officer-insert-button" class="logout-btn">Insert</button>
+
+    <script>
+        document.getElementById("officer-insert-button").addEventListener("click", function() {
+            var fields = {
+                badge_number : document.getElementById("insert-badge-num").value.trim(),
+                first_name : document.getElementById("insert-first-name").value.trim(),
+                last_name : document.getElementById("insert-last-name").value.trim(),
+                precinct : document.getElementById("insert-precinct").value.trim(),
+                phone_number : document.getElementById("insert-phone-number").value.trim(),
+                status : document.getElementById("insert-status").value.trim(),
+                type : document.getElementById("insert-type").value.trim(),
+                address : document.getElementById("insert-address").value.trim(),
+            };
+
+            for (var key in fields) {
+                if (fields.hasOwnProperty(key) && fields[key] === "") {
+                    alert("Please fill in all columns before inserting.");
+                    return;
+                }
+            }
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "{{ url_for('insert_officer') }}", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                console.log("Data inserted successfully!");
+                location.reload();
+            }
+            };
+            var data = JSON.stringify({
+                fields
+            });
+            xhr.send(data);
+        });
+    </script>
+
 </div>
 {% endblock %}
