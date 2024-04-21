@@ -83,6 +83,9 @@ button {
     font-size: 16px;
 }
 
+#officer-insert-button {
+    width: 87.9%;
+}
 
 .button-plus-wrapper {
     position: absolute;
@@ -130,3 +133,14 @@ button {
     background-color: #095776;
     transition: 0.2s;
   }
+
+table {
+    border-collapse: collapse;
+}
+
+td {
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
