@@ -39,9 +39,10 @@ body {
 
 .container {
     max-width: 100%;
-    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
     background-color: #fff;
-    padding: 20px;
+    padding: 25px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -80,4 +81,66 @@ button {
     background-color: purple;
     width: 100%;
     font-size: 16px;
+}
+
+#officer-insert-button {
+    width: 87.9%;
+}
+
+.button-plus-wrapper {
+    position: absolute;
+    width: 100%;
+    background: #095776;
+}
+.button_plus {
+    position: absolute;
+    width: 35px;
+    height: 35px;
+    background: #fff;
+    cursor: pointer;
+    border: 2px solid #095776;
+  }
+
+  .button_plus:after {
+    content: '';
+    position: absolute;
+    transform: translate(-50%, -50%);
+    height: 4px;
+    width: 50%;
+    background: #095776;
+    top: 50%;
+    left: 50%;
+  }
+
+  .button_plus:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #095776;
+    height: 50%;
+    width: 4px;
+  }
+
+  .button_plus:hover:before,
+  .button_plus:hover:after {
+    background: #fff;
+    transition: 0.2s;
+  }
+
+  .button_plus:hover {
+    background-color: #095776;
+    transition: 0.2s;
+  }
+
+table {
+    border-collapse: collapse;
+}
+
+td {
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }

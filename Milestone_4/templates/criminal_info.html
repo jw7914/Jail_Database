@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}
+Criminal Info
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='./css/admin.css') }}">    
+{% endblock %}
+
+{% block body %}
+<div class="navbar">
+    <a href="{{ url_for('home') }}">Home</a>
+</div>
+<h1>{{ name }}</h1>
+<div class="container">
+    <h1>Crime Details</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Crime Code</th>
+                <th>Description</th>
+                <th>Classification</th>
+                <th>Date Charged</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for date_charged, crime_code, classification, description in crime_details %}
+            <tr>
+                <td>{{ crime_code }}</td>
+                <td>{{ description }}</td>
+                <td>{{ classification }}</td>
+                <td>{{ date_charged }}</td>
+            </tr>
+            {% endfor %}
+        </tbody> 
+    </table>
+</div>
+
+<div class="container">
+    <h1>Sentencing Details</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Sentence Type</th>
+                <th>Starting Date</th>
+                <th>Ending Date</th>
+                <th>Violation Code</th>
+                <th>Violation Description</th>
+                <th>Number of Violations</th>
+                <th>Charge Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for setence_type, starting_date, ending_date, violation_code, charge_status, num_violation, violation_description in sentencing_details %}
+            <tr>
+                <td>{{ setence_type }}</td>
+                <td>{{ starting_date }}</td>
+                <td>{{ ending_date }}</td>
+                <td>{{ violation_code }}</td>
+                <td>{{ violation_description }}</td>
+                <td>{{ num_violation }}</td>
+                <td>{{ charge_status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody> 
+    </table>
+</div>
+    
+<div class="container">
+    <h1>Appeal Details</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Appeal File Date</th>
+                <th>Appeal Hearing Date</th>
+                <th>Appeal Status</th>
+                <th>Appeals Reamining</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appeal_file_date,appeal_hearing_date,appeal_status,num_appeal in appeal_detials %}
+            <tr>
+                <td>{{ appeal_file_date }}</td>
+                <td>{{ appeal_hearing_date }}</td>
+                <td>{{ appeal_status }}</td>
+                <td>{{ num_appeal }}</td>
+            </tr>
+            {% endfor %}
+        </tbody> 
+    </table>
+</div>
+
+<div class="container">
+    <h1>Fine Details</h1>
+    <table>
+        <thead>
+            <tr>
+
+                <th>Fine Amount</th>
+                <th>Court Fee</th>
+                <th>Paid Amount</th>
+                <th>Payment Due Date</th>
+                <th>Make Payment</th>
+            </tr>
+        </thead>
+        <tbody>
+                {% for fine_amount, court_fee, paid_amount, payment_due_date in fine_details %}
+                <tr>
+                    <td>{{ fine_amount }}</td>
+                    <td>{{ court_fee }}</td>
+                    <td>{{ paid_amount }}</td>
+                    <td>{{ payment_due_date }}</td>
+                    <td>
+                        <form action="/submit" method="post">
+                        <input type="text" id="textbox" name="textbox" required>
+                        <input type="submit" value="Submit">
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+        </tbody> 
+    </table>
+</div>
+{% endblock %}

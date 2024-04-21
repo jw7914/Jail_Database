@@ -1,6 +1,6 @@
 #! /Applications/XAMPP/xamppfiles/htdocs/Jail_Database/env/bin/python
 #Import Libraries
-from flask import Flask, render_template, request, session, url_for, redirect, flash
+from flask import Flask, render_template, request, session, url_for, redirect, flash, jsonify
 import pymysql.cursors
 import pandas as PD
 from werkzeug.security import generate_password_hash
@@ -60,7 +60,7 @@ def register_auth(username, id):
 		cursor.close()
 		return(("User already exists", False))
 	cursor.close()
-	#Check if they are an officer 
+	#Check if they are an officer
 	cursor = conn.cursor()
 	query = "SELECT * FROM officer WHERE badge_number = %s;"
 	cursor.execute(query, (id))
@@ -101,7 +101,7 @@ def admin_auth(username, password):
 	cursor.close()
 	if admin:
 		return True
-	else: 
+	else:
 		return False
 
 def search_criminal(first_name="", last_name="", alias="", case_id=""):
@@ -175,7 +175,7 @@ def home():
 			criminal_phonenum = []
 			violent = []
 			probation = []
-			
+
 			df = search_criminal(first_name_input, last_name_input, alias_input, case_id_input)
 			# Populate lists from DataFrame
 			for i, j in df.iterrows():
@@ -206,7 +206,7 @@ def home():
 		else:
 			return render_template('error_cred.html')
 	else:
-		return render_template('home.html')		
+		return render_template('home.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register_route():
@@ -460,6 +460,69 @@ def display_crimes():
 	zipped_data = zip(crime_codes, classifications, descriptions)
 	return render_template('crimes.html', zipped_data=zipped_data)
 
+@app.route('/criminal_info/<criminal_id>')
+def criminal_info(criminal_id):
+	query = "SELECT criminal_first, criminal_last FROM CRIMINAL WHERE criminal_id = %s;"
+	df = run_statement(query, (criminal_id))
+	for i,j in df.iterrows():
+		name = j['criminal_first'] + " " + j['criminal_last']
+	query = "SELECT * FROM SENTENCING INNER JOIN charge ON SENTENCING.criminal_id = charge.criminal_id INNER JOIN crime ON crime.crime_code = charge.crime_code WHERE SENTENCING.criminal_id =%s;"
+	df = run_statement(query, (criminal_id))
+	date_charged = []
+	crime_code = []
+	classification = []
+	description = []
+	for i,j in df.iterrows():
+		date_charged.append(j['date_charged'])
+		crime_code.append(j['crime_code'])
+		classification.append(j['classification'])
+		description.append(j['crime_description'])
+	crime_details = zip(date_charged, crime_code, classification, description)
+	query = "SELECT * FROM SENTENCING INNER JOIN VIOLATION ON VIOLATION.violation_code = SENTENCING.violation_code INNER JOIN CRIME_CASE ON SENTENCING.sentence_id = CRIME_CASE.sentence_id WHERE SENTENCING.criminal_id = %s;"
+	df = run_statement(query, (criminal_id))
+	sentence_type = []
+	starting_date =[]
+	ending_date = []
+	violation_code = []
+	charge_status = []
+	num_violation = []
+	violation_description = []
+	for i,j in df.iterrows():
+		sentence_type.append(j['sentence_type'])
+		starting_date.append(j['starting_date'])
+		ending_date.append(j['end_date'])
+		violation_code.append(j['violation_code'])
+		charge_status.append(j['charge_status'])
+		num_violation.append(j['num_violations'])
+		violation_description.append(j['violation_description'])
+	sentencing_details = zip(sentence_type,starting_date,ending_date,violation_code,charge_status,num_violation,violation_description)
+	query = "SELECT * FROM APPEAL WHERE criminal_id = %s;"
+	df = run_statement(query, (criminal_id))
+	appeal_file_date = []
+	appeal_hearing_date = []
+	appeal_status = []
+	num_appeal = []
+	for i,j in df.iterrows():
+		appeal_file_date.append(j['appeal_file_date'])
+		appeal_hearing_date.append(j['appeal_hearing_date'])
+		appeal_status.append(j['appeal_status'])
+		num_appeal.append(j['num_appeal_remaining'])
+	appeal_detials = zip(appeal_file_date,appeal_hearing_date,appeal_status,num_appeal)
+	query = "SELECT * FROM FINE WHERE criminal_id = %s;"
+	df = run_statement(query, (criminal_id))
+	fine_amount = []
+	court_fee = []
+	paid_amount = []
+	payment_due_date = []
+	print(df)
+	for i,j in df.iterrows():
+		fine_amount.append(j['fine_amount'])
+		court_fee.append(j['court_fee'])
+		paid_amount.append(j['paid_amount'])
+		payment_due_date.append(j['payment_due_date'])
+	fine_details = zip(fine_amount, court_fee, paid_amount, payment_due_date)
+	return render_template('criminal_info.html', name=name,crime_details=crime_details, sentencing_details=sentencing_details, appeal_detials=appeal_detials,fine_details=fine_details)
+	
 #Delete routes
 @app.route('/delete/<badge_num>', methods=["GET"])
 def delete_user(badge_num):
@@ -508,6 +571,32 @@ def delete_criminal(criminal_id):
 		return redirect(url_for('admin_criminal'))
 	else:
 		return "Unauthorized", 401
+
+@app.route('/insert_officer', methods=["POST"])
+def insert_officer():
+    if 'admin' not in session:
+        return "Unauthorized", 401
+    if request.method != "POST":
+        return redirect(url_for('admin_officer'))
+
+    data = request.json
+    badge_number = data['fields']['badge_number']
+    first_name = data['fields']['first_name']
+    last_name = data['fields']['last_name']
+    precinct = data['fields']['precinct']
+    phone_number = data['fields']['phone_number']
+    status = data['fields']['status']
+    type_ = data['fields']['type']
+    address = data['fields']['address']
+    cursor = conn.cursor()
+
+    query = "INSERT INTO officer (badge_number, officer_first, officer_last, precinct, officer_phonenum, activity_status, officer_type, officer_address) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+    cursor.execute(query, (badge_number, first_name, last_name, precinct, phone_number, status, type_, address))
+    conn.commit()
+    cursor.close()
+    response = jsonify({"message": "Insert Succesful"})
+    return redirect(url_for('admin_officer'))
+
 
 if __name__ == "__main__":
 	app.run('127.0.0.1', 5000, debug = True)
