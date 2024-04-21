@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block style %}
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='./css/search.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='./css/crimes.css') }}">
 {% endblock %}
 
 {% block title %}
@@ -10,12 +10,29 @@ Crime List
 {% block body %}
 <nav class="navbar">
     <ul>
-        <li><a href="/">Home</a></li>
+        <li><a href="{{ url_for('home') }}">Home</a></li>
     </ul>
 </nav>
 
 <div class="container">
-    <h1>Crimes List</h1>
-    {{ table }}
+    <h1>Crime Info</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Crime Code</th>
+                <th>Classification</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for crime_codes, classifications, descriptions in zipped_data %}
+                <tr>
+                    <td>{{ crime_codes }}</td>
+                    <td>{{ classifications }}</td>
+                    <td>{{ descriptions }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}
