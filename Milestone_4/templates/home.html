@@ -11,16 +11,16 @@ Jail Homepage
 {% block body %}
 <nav class="navbar">
     <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="register">Register</a></li>
-        <li><a href="crimes">Crime List</a></li>
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li><a href="{{ url_for('register_route') }}">Register</a></li>
+        <li><a href="/crimes">Crime List</a></li>
     </ul>
 </nav>
 <div class="main">
     <div class="main-query">
         <h1>Search Bar</h1>
         <h3>Query by Case, Name, or Alias!</h3>
-        <form id="search-form" action="http://127.0.0.1:5000/" method="get">
+        <form id="search-form" action="{{ url_for('home') }}" method="get">
             <div>
                 <label for="case-num">
                     Case Number:
@@ -83,7 +83,7 @@ Jail Homepage
     <div class="govt-login">
         <h1>Government Login</h1>
         <h3>Enter your login credentials</h3>
-        <form id="login-form" action="http://127.0.0.1:5000/" method="post">
+        <form id="login-form" action="{{ url_for('home') }}" method="post">
             <label for="username">
                 Username:
             </label>
@@ -104,7 +104,7 @@ Jail Homepage
                     Login
                 </button>
             </div>
-            <p><a href="/login" style="text-decoration:none">Admin Login</a></p>
+            <p><a href="{{ url_for('admin_login')}}" style="text-decoration:none">Admin Login</a></p>
         </form>
     
         <script>

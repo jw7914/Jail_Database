@@ -160,37 +160,37 @@ def home():
 	if "admin" in session:
 		return redirect(url_for("admin"))
 	if request.method == 'GET': #Basically if searching through public inmate
-		first_name = request.args.get('first-name', '')
-		last_name = request.args.get('last-name', '')
-		alias = request.args.get('alias', '')
-		case_id = request.args.get('case-num', '')
-		if first_name == '' and last_name == '' and alias == '' and case_id == '':
+		first_name_input = request.args.get('first-name', '')
+		last_name_input = request.args.get('last-name', '')
+		alias_input = request.args.get('alias', '')
+		case_id_input = request.args.get('case-num', '')
+		if first_name_input == '' and last_name_input == '' and alias_input == '' and case_id_input == '':
 			return render_template('home.html')
 		else:
 			# Initialize lists to store data
-			name_list = []
-			criminal_id_list = []
-			alias_list = []
-			criminal_address_list = []
-			criminal_phonenum_list = []
-			violent_list = []
-			probation_list = []
+			name = []
+			criminal_id = []
+			alias = []
+			criminal_address = []
+			criminal_phonenum = []
+			violent = []
+			probation = []
 			
-			df = search_criminal(first_name, last_name, alias, case_id)
+			df = search_criminal(first_name_input, last_name_input, alias_input, case_id_input)
 			# Populate lists from DataFrame
 			for i, j in df.iterrows():
-				name_list.append(j['criminal_first'] + ' ' + j['criminal_last'])
-				alias_list.append(j['alias'])
-				criminal_id_list.append(j['criminal_id'])
-				criminal_address_list.append(j['criminal_address'])
-				violent_list.append(j['violent_offender_stat'])
-				probation_list.append(j['probation_status'])
-				criminal_phonenum_list.append(j['criminal_phonenum'])
-			if (len(name_list) == 0):
+				name.append(j['criminal_first'] + ' ' + j['criminal_last'])
+				alias.append(j['alias'])
+				criminal_id.append(j['criminal_id'])
+				criminal_address.append(j['criminal_address'])
+				violent.append(j['violent_offender_stat'])
+				probation.append(j['probation_status'])
+				criminal_phonenum.append(j['criminal_phonenum'])
+			if (len(name) == 0):
 				return render_template ('inmate_search_results.html', empty=True)
 			else:
 				# Zip the lists together
-				zipped_data = zip(name_list, criminal_id_list, alias_list, criminal_address_list, criminal_phonenum_list, violent_list, probation_list)
+				zipped_data = zip(name, criminal_id, alias, criminal_address, criminal_phonenum, violent, probation)
 				# Render the template with zipped_data
 				return render_template('inmate_search_results.html', zipped_data=zipped_data)
 	elif request.method == 'POST': #If logging in
@@ -265,58 +265,58 @@ def officer_home(badge_number):
             search_args = list([request.form[field] if request.form[field] != "" else "" for field in inmate_search_fields])
             df = search_criminal(*search_args)
 			# Initialize lists to store data
-            name_list = []
-            criminal_id_list = []
-            alias_list = []
-            criminal_address_list = []
-            criminal_phonenum_list = []
-            violent_list = []
-            probation_list = []
+            name = []
+            criminal_id = []
+            alias = []
+            criminal_address = []
+            criminal_phonenum = []
+            violent = []
+            probation = []
 
             # Populate lists from DataFrame
             for i, j in df.iterrows():
-                name_list.append(j['criminal_first'] + ' ' + j['criminal_last'])
-                alias_list.append(j['alias'])
-                criminal_id_list.append(j['criminal_id'])
-                criminal_address_list.append(j['criminal_address'])
-                violent_list.append(j['violent_offender_stat'])
-                probation_list.append(j['probation_status'])
-                criminal_phonenum_list.append(j['criminal_phonenum'])
-            if (len(name_list) == 0):
+                name.append(j['criminal_first'] + ' ' + j['criminal_last'])
+                alias.append(j['alias'])
+                criminal_id.append(j['criminal_id'])
+                criminal_address.append(j['criminal_address'])
+                violent.append(j['violent_offender_stat'])
+                probation.append(j['probation_status'])
+                criminal_phonenum.append(j['criminal_phonenum'])
+            if (len(name) == 0):
                 print("OOPIE")
                 return redirect(url_for("officer_home", badge_number=badge_number))
             else:
                 # Zip the lists together
-                zipped_data = zip(name_list, criminal_id_list, alias_list, criminal_address_list, criminal_phonenum_list, violent_list, probation_list)
+                zipped_data = zip(name, criminal_id, alias, criminal_address, criminal_phonenum, violent, probation)
                 return render_template('inmate_search_results.html', zipped_data=zipped_data)
 
         if search_type == "officer":
             search_args = list([request.form[field] if request.form[field] != "" else "" for field in officer_search_fields])
             df = search_officer(*search_args)
             # Initialize lists to store data
-            badge_number_list = []
-            name_list = []
-            precinct_list = []
-            officer_phonenum_list = []
-            activity_status_list = []
-            officer_type_list = []
-            officer_address_list = []
+            badge_number = []
+            name = []
+            precinct = []
+            officer_phonenum = []
+            activity_status = []
+            officer_type = []
+            officer_address = []
 
             # Populate lists from DataFrame
             for i, j in df.iterrows():
-                badge_number_list.append(j['badge_number'])
-                name_list.append(j['officer_first'] + ' ' + j['officer_last'])
-                precinct_list.append(j['precinct'])
-                officer_phonenum_list.append(j['officer_phonenum'])
-                activity_status_list.append(j['activity_status'])
-                officer_type_list.append(j['officer_type'])
-                officer_address_list.append(j['officer_address'])
-            if (len(name_list) == 0):
+                badge_number.append(j['badge_number'])
+                name.append(j['officer_first'] + ' ' + j['officer_last'])
+                precinct.append(j['precinct'])
+                officer_phonenum.append(j['officer_phonenum'])
+                activity_status.append(j['activity_status'])
+                officer_type.append(j['officer_type'])
+                officer_address.append(j['officer_address'])
+            if (len(name) == 0):
                 print("OOPIE")
                 return redirect(url_for("officer_home", badge_number=badge_number))
             else:
                 # Zip the lists together
-                zipped_data = zip(badge_number_list, name_list, precinct_list, officer_phonenum_list, activity_status_list, officer_type_list, officer_address_list)
+                zipped_data = zip(badge_number, name, precinct, officer_phonenum, activity_status, officer_type, officer_address)
                 # Render the template with zipped_data
                 return render_template('officer_search_results.html', zipped_data=zipped_data)
 
@@ -388,6 +388,81 @@ def admin():
 	else:
 		redirect(url_for('home'))
 
+@app.route('/admin/officer')
+def admin_officer():
+	if 'admin' in session:
+		query = "SELECT * FROM OFFICER"
+		df = run_statement(query)
+		badge_number = []
+		officer_first = []
+		officer_last = []
+		precinct = []
+		officer_phonenum = []
+		activity_status = []
+		officer_type = []
+		officer_address = []
+		for i, j in df.iterrows():
+			badge_number.append(j['badge_number'])
+			officer_first.append(j['officer_first'])
+			officer_last.append(j['officer_last'])
+			precinct.append(j['precinct'])
+			officer_phonenum.append(j['officer_phonenum'])
+			activity_status.append(j['activity_status'])
+			officer_type.append(j['officer_type'])
+			officer_address.append(j['officer_address'])
+			zipped_data = zip(badge_number, officer_first, officer_last, precinct, officer_phonenum, activity_status, officer_type, officer_address)
+		if len(badge_number) == 0:
+			return render_template('admin_officer.html', empty=True)
+		else:
+			return render_template('admin_officer.html', zipped_data=zipped_data)
+	else:
+		return redirect(url_for('home'))
+
+@app.route('/admin/criminal')
+def admin_criminal():
+	if 'admin' in session:
+		query = "SELECT * FROM CRIMINAL"
+		df = run_statement(query)
+		criminal_first = []
+		criminal_last = []
+		criminal_id = []
+		alias = []
+		criminal_address = []
+		criminal_phonenum = []
+		violent = []
+		probation = []
+		for i, j in df.iterrows():
+			criminal_first.append(j['criminal_first'])
+			criminal_last.append(j['criminal_last'])
+			alias.append(j['alias'])
+			criminal_id.append(j['criminal_id'])
+			criminal_address.append(j['criminal_address'])
+			violent.append(j['violent_offender_stat'])
+			probation.append(j['probation_status'])
+			criminal_phonenum.append(j['criminal_phonenum'])
+		if len(criminal_first) == 0:
+			return render_template("admin_criminal.html", empty=True)
+		else:
+			zipped_data = zip(criminal_first, criminal_last, criminal_id, alias, criminal_address, criminal_phonenum, violent, probation)
+			return render_template("admin_criminal.html", zipped_data=zipped_data)
+	else:
+		return redirect(url_for('home'))
+
+@app.route('/crimes', methods=['POST', 'GET'])
+def display_crimes():
+	query = "SELECT * FROM crime;"
+	df = run_statement(query)
+	crime_codes = []
+	classifications = []
+	descriptions = []
+	for i, j in df.iterrows():
+		crime_codes.append(j['crime_code'])
+		classifications.append(j['classification'])
+		descriptions.append(j['crime_description'])
+	zipped_data = zip(crime_codes, classifications, descriptions)
+	return render_template('crimes.html', zipped_data=zipped_data)
+
+#Delete routes
 @app.route('/delete/<badge_num>', methods=["GET"])
 def delete_user(badge_num):
 	if 'admin' in session:
@@ -396,29 +471,45 @@ def delete_user(badge_num):
 		cursor.execute(query, (badge_num))
 		conn.commit()
 		cursor.close()
-		return redirect(url_for('admin')) 
+		return redirect(url_for('admin'))
 	else:
 		return "Unauthorized", 401
 
+@app.route('/delete_officer/<badge_number>', methods=["GET"])
+def delete_officer(badge_number):
+	if 'admin' in session:
+		cursor = conn.cursor()
+		query = "SELECT badge_number FROM users WHERE badge_number = %s"
+		cursor.execute(query, (badge_number))
+		inusers = cursor.fetchone()
+		conn.commit()
+		cursor.close()
+		if inusers:
+			cursor = conn.cursor()
+			query = "DELETE FROM users WHERE badge_number = %s;"
+			cursor.execute(query, (badge_number))
+			conn.commit()
+			cursor.close()
+		cursor = conn.cursor()
+		query = "DELETE FROM officer WHERE badge_number = %s;"
+		cursor.execute(query, (badge_number))
+		conn.commit()
+		cursor.close()
+		return redirect(url_for('admin_officer'))
+	else:
+		return "Unauthorized", 401
 
-@app.route('/test', methods=['POST', 'GET'])
-def test():
-	first_name = request.get_data
-	df = run_statement("SELECT * FROM CRIMINAL;")
-	criminal_ids = []
-	for i, j in df.iterrows():
-		criminal_ids.append(j['criminal_id'])
-	return render_template('test.html', criminal_ids=criminal_ids)
+@app.route('/delete_criminal/<criminal_id>', methods=["GET"])
+def delete_criminal(criminal_id):
+	if 'admin' in session:
+		cursor = conn.cursor()
+		query = "DELETE FROM CRIMINAL WHERE criminal_id = %s"
+		cursor.execute(query, (criminal_id))
+		conn.commit()
+		cursor.close()
+		return redirect(url_for('admin_criminal'))
+	else:
+		return "Unauthorized", 401
 
 if __name__ == "__main__":
 	app.run('127.0.0.1', 5000, debug = True)
-
-
-@app.route('/crimes', methods=['POST', 'GET'])
-def display_crimes():
-	cursor = conn.cursor()
-	query = "SELECT * FROM crime;"
-	df = run_statement(query)
-	table = df.to_html(index=False)
-
-	return('crimes.html', table)
