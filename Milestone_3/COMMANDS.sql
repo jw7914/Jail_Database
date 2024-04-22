@@ -421,8 +421,6 @@ VALUES
 ("Alex", SHA("Alex"));
 
 -- starting id for payment history
--- INSERT INTO PAYMENT_HISTORY (f_case_id, payment_amt)
--- VALUES (1, 0);
 -- SQL CODE
 DELIMITER //
 -- SEARCHES/INFO DISPLAY (No triggers needed)
