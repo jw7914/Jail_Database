@@ -94,6 +94,7 @@ def login(username, password):
 		return False
 
 def admin_auth(username, password):
+	conn = connectDB(role='Admin_Role', pw='password')
 	cursor = conn.cursor()
 	query = "SELECT password FROM ADMINS WHERE username = %s AND password = SHA(%s);"
 	cursor.execute(query, (username, password))
@@ -358,15 +359,16 @@ def admin_logout():
 
 @app.route('/login', methods=['POST', 'GET'])
 def admin_login():
+	
 	if request.method == 'POST':
 		username = request.form['admin_username']
 		password = request.form['admin_password']
 		if admin_auth(username, password):
 			session['admin'] = username
-			conn = connectDB(role='Admin_Role', pw='password')
 			return redirect(url_for("admin"))
 		else:
 			flash("Wrong Credentials")
+			connectDB(role='public_user', pw='')
 	return render_template("admin_login.html")
 
 @app.route('/admin')
