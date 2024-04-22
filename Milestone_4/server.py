@@ -346,8 +346,6 @@ def officer_home(badge_number):
 
 
 
-
-
 @app.route('/logout/officer')
 def officer_logout():
 	session.pop("badge_number", None)
@@ -470,6 +468,18 @@ def display_crimes():
 	zipped_data = zip(crime_codes, classifications, descriptions)
 	return render_template('crimes.html', zipped_data=zipped_data)
 
+@app.route('/make_payment', methods=['POST'])
+def make_payment():
+    if request.method == 'POST':
+        amount = request.form['payment_amount']
+        criminal_id = request.form['criminal_id']
+        cursor = conn.cursor()
+        query = "UPDATE fine SET paid_amount = paid_amount + %s WHERE criminal_id = %s"
+        cursor.execute(query, (amount, criminal_id))
+        conn.commit()
+        cursor.close()
+    return redirect(url_for('criminal_info', criminal_id=criminal_id))
+
 @app.route('/criminal_info/<criminal_id>')
 def criminal_info(criminal_id):
 	query = "SELECT criminal_first, criminal_last FROM CRIMINAL WHERE criminal_id = %s;"
@@ -525,12 +535,14 @@ def criminal_info(criminal_id):
 	paid_amount = []
 	payment_due_date = []
 	print(df)
+	criminal_id_list = []
 	for i,j in df.iterrows():
 		fine_amount.append(j['fine_amount'])
 		court_fee.append(j['court_fee'])
 		paid_amount.append(j['paid_amount'])
 		payment_due_date.append(j['payment_due_date'])
-	fine_details = zip(fine_amount, court_fee, paid_amount, payment_due_date)
+		criminal_id_list.append(criminal_id)
+	fine_details = zip(fine_amount, court_fee, paid_amount, payment_due_date, criminal_id_list)
 	return render_template('criminal_info.html', name=name,crime_details=crime_details, sentencing_details=sentencing_details, appeal_detials=appeal_detials,fine_details=fine_details)
 	
 #Delete routes

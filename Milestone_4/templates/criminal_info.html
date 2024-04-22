@@ -51,9 +51,9 @@ Criminal Info
             </tr>
         </thead>
         <tbody>
-            {% for setence_type, starting_date, ending_date, violation_code, charge_status, num_violation, violation_description in sentencing_details %}
+            {% for sentence_type, starting_date, ending_date, violation_code, charge_status, num_violation, violation_description in sentencing_details %}
             <tr>
-                <td>{{ setence_type }}</td>
+                <td>{{ sentence_type }}</td>
                 <td>{{ starting_date }}</td>
                 <td>{{ ending_date }}</td>
                 <td>{{ violation_code }}</td>
@@ -104,16 +104,17 @@ Criminal Info
             </tr>
         </thead>
         <tbody>
-                {% for fine_amount, court_fee, paid_amount, payment_due_date in fine_details %}
+                {% for fine_amount, court_fee, paid_amount, payment_due_date, criminal_id in fine_details %}
                 <tr>
                     <td>{{ fine_amount }}</td>
                     <td>{{ court_fee }}</td>
                     <td>{{ paid_amount }}</td>
                     <td>{{ payment_due_date }}</td>
                     <td>
-                        <form action="/submit" method="post">
-                        <input type="text" id="textbox" name="textbox" required>
-                        <input type="submit" value="Submit">
+                        <form action="{{ url_for('make_payment') }}" method="post">
+                            <input type="hidden" name="criminal_id" value="{{ criminal_id }}">
+                            <input type="number" name="payment_amount" id="payment_amount" required>
+                            <input type="submit" value="Submit">
                         </form>
                     </td>
                 </tr>
