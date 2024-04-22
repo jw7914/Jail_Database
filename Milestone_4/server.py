@@ -13,21 +13,37 @@ app.secret_key = 'jason'
 
 #Configure MySQL and connect to certain user defualt too root user
 def connectDB(role = 'public_user', pw = ''):
-	try:
-		conn = pymysql.connect(host='localhost',
-							user=role,
-							password=pw,
-							db='jail',
-							charset='utf8mb4',
-							cursorclass=pymysql.cursors.DictCursor)
-		print("==================\nConnected to the database!\n==================")
-		return conn
-	except pymysql.Error as e:
-		print(f"Error connecting to MySQL: {e}")
-		# Raise the exception to handle it further up the call stack if needed
-		raise
+	if role == 'admin':
+		try:
+			conn = pymysql.connect(host='localhost',
+						  		user='root',
+								password=pw,
+								db='jail',
+								charset='utf8mb4',
+								cursorclass=pymysql.cursors.DictCursor)
+			print("==================\nConnected to the database!\n==================")
+			print('ADMIN')
+		except pymysql.Error as e:
+			print(f"Error connecting to MySQL: {e}")
+			# Raise the exception to handle it further up the call stack if needed
+			raise
+	else:
+		try:
+			conn = pymysql.connect(host='localhost',
+								user=role,
+								password=pw,
+								db='jail',
+								charset='utf8mb4',
+								cursorclass=pymysql.cursors.DictCursor)
+			print("==================\nConnected to the database!\n==================")
+			print(role)
+			return conn
+		except pymysql.Error as e:
+			print(f"Error connecting to MySQL: {e}")
+			# Raise the exception to handle it further up the call stack if needed
+			raise
 
-#Connect to root user -- probably change to lowest permission privilege and then work way up in each route
+#Connect to lowest permission connection
 conn = connectDB(role='public_user', pw='')
 
 #Default if only query is passed then it will execute with root user with no arguments
@@ -196,7 +212,7 @@ def home():
 	elif request.method == 'POST': #If logging in
 		username = request.form['username']
 		password = request.form['password']
-		if login(username, password, role='Officer_Role'):
+		if login(username, password):
 			query = "SELECT officer_first, badge_number FROM OFFICER WHERE badge_number IN (SELECT badge_number FROM users WHERE username = %s)"
 			conn = connectDB(role='Officer_Role', pw='password')
 			cursor = conn.cursor()
