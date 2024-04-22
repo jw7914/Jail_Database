@@ -12,8 +12,6 @@ CREATE VIEW civ_inmate_view AS
 SELECT criminal_id, criminal_first, criminal_last, violent_offender_stat, probation_status, alias
 FROM Criminal;
 
-CREATE VIEW 
-
 CREATE VIEW civ_appeal_view AS
 SELECT appeal_status
 FROM APPEAL;
@@ -30,13 +28,11 @@ CREATE ROLE Civilian;
 
 REVOKE ALL ON jail.* FROM Civilian;
 
-GRANT SELECT ON jail.civ_inmate_view TO Civilian;
-GRANT SELECT ON jail.civ_appeal_view TO Civilian;
-GRANT SELECT ON jail.civ_charge_view TO Civilian;
-GRANT SELECT ON jail.civ_sentence_view TO Civilian;
+GRANT SELECT ON jail.civ_inmate_view TO PUBLIC;
+GRANT SELECT ON jail.civ_appeal_view TO PUBLIC;
+GRANT SELECT ON jail.civ_charge_view TO PUBLIC;
+GRANT SELECT ON jail.civ_sentence_view TO PUBLIC;
 
-CREATE USER 'public_user'@'localhost' IDENTIFIED BY '';
-GRANT Civilian to 'public_user'@'localhost';
 
 
 -- -- Create officer view
