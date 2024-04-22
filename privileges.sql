@@ -35,15 +35,21 @@ GRANT SELECT ON jail.civ_sentence_view TO PUBLIC;
 
 
 
--- -- Create officer view
--- -- No permission to view users
--- -- No permission to change tables only be able to view stuff
+-- Create officer view
+-- No permission to view users
+-- No permission to change tables only be able to view stuff
 
 CREATE ROLE Officer_Role;
 
 REVOKE ALL ON jail.USERS FROM Officer_Role;
-CREATE USER 'officer'@'localhost' IDENTIFIED BY 'password';
-GRANT Officer to 'officer'
+REVOKE INSERT, UPDATE, DELETE ON jail.* FROM Officer_Role;
 
--- -- Admin view = root user nothing to be done
--- -- Overall manager to manage officers and assign them to certain things
+CREATE USER 'officer'@'localhost' IDENTIFIED BY 'password';
+GRANT Officer_Role to 'officer'
+
+-- Admin view = root user nothing to be done
+-- Overall manager to manage officers and assign them to certain things
+
+CREATE ROLE Admin_Role;
+
+GRANT ALL ON jail.* TO Admin_Role;
