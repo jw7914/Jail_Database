@@ -11,6 +11,7 @@ body {
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: auto
 }
 
 table {
@@ -81,21 +82,18 @@ button {
     color: white;
     cursor: pointer;
     background-color: purple;
-    width: 80%;
+    width: 100%;
     font-size: 16px;
 }
 
 #officer-insert-button {
-    width: 87.9%;
-<<<<<<< HEAD
-=======
+    width: 90%;
 }
 
 .button-plus-wrapper {
     position: absolute;
     width: 100%;
     background: #095776;
->>>>>>> 9b9b5e0d5ba20c8cefb5f0a27699d15452e78285
 }
 
 
@@ -103,18 +101,12 @@ table {
     border-collapse: collapse;
 }
 
-<<<<<<< HEAD
-=======
-  .button_plus:hover {
-    background-color: #095776;
-    transition: 0.2s;
-  }
 
-table {
-    border-collapse: collapse;
+.button_plus:hover {
+background-color: #095776;
+transition: 0.2s;
 }
 
->>>>>>> 9b9b5e0d5ba20c8cefb5f0a27699d15452e78285
 td {
     padding-left: 0px;
     padding-right: 0px;
