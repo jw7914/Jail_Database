@@ -171,8 +171,6 @@ def home():
 			name = []
 			criminal_id = []
 			alias = []
-			# criminal_address = []
-			# criminal_phonenum = []
 			violent = []
 			probation = []
 
@@ -182,10 +180,8 @@ def home():
 				name.append(j['criminal_first'] + ' ' + j['criminal_last'])
 				alias.append(j['alias'])
 				criminal_id.append(j['criminal_id'])
-				# criminal_address.append(j['criminal_address'])
 				violent.append(j['violent_offender_stat'])
 				probation.append(j['probation_status'])
-				# criminal_phonenum.append(j['criminal_phonenum'])
 			if (len(name) == 0):
 				return render_template ('inmate_search_results.html', empty=True)
 			else:
@@ -196,7 +192,7 @@ def home():
 	elif request.method == 'POST': #If logging in
 		username = request.form['username']
 		password = request.form['password']
-		if login(username, password, role='Officer_Role'):
+		if login(username, password):
 			query = "SELECT officer_first, badge_number FROM OFFICER WHERE badge_number IN (SELECT badge_number FROM users WHERE username = %s)"
 			conn = connectDB(role='Officer_Role', pw='password')
 			cursor = conn.cursor()
@@ -350,13 +346,13 @@ def officer_home(badge_number):
 @app.route('/logout/officer')
 def officer_logout():
 	session.pop("badge_number", None)
-	conn = connectDB(role='public_user', pw='')
+	connectDB(role='public_user', pw='')
 	return redirect(url_for("home"))
 
 @app.route('/logout/admin', methods=['POST'])
 def admin_logout():
 	session.pop("admin", None)
-	conn = connectDB(role='public_user', pw='')
+	connectDB(role='public_user', pw='')
 	return redirect(url_for("home"))
 
 
@@ -367,6 +363,7 @@ def admin_login():
 		password = request.form['admin_password']
 		if admin_auth(username, password):
 			session['admin'] = username
+			conn = connectDB(role='Admin_Role', pw='password')
 			return redirect(url_for("admin"))
 		else:
 			flash("Wrong Credentials")

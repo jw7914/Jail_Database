@@ -22,10 +22,18 @@ GRANT UPDATE ON jail.fine TO 'public_user'@'localhost';
 
 CREATE ROLE Officer_Role;
 
-GRANT SELECT ON jail.* TO Officer_Role;
-
 CREATE USER 'Officer_Role'@'localhost' IDENTIFIED BY 'password';
 GRANT Officer_Role to 'Officer_Role'@'localhost';
 
+GRANT SELECT ON jail.* TO 'Officer_Role'@'localhost';
+
 -- Admin view = root user nothing to be done
 -- Overall manager to manage officers and assign them to certain things
+
+CREATE ROLE Admin_Role;
+
+
+CREATE USER 'Admin_Role'@'localhost' IDENTIFIED BY 'password';
+GRANT Admin_Role TO 'Admin_Role'@'localhost';
+
+GRANT ALL PRIVILEGES ON jail.* TO 'Admin_Role'@'localhost';
