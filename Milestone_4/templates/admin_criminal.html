@@ -17,9 +17,6 @@ Admin Page
 </div>
 <div class="container">
     <h1>Criminals List</h1>
-    <form action="{{ url_for('admin_logout')}}" method="post">
-        <button type="submit" class="logout-btn">Insert</button>
-    </form>
     <table>
         <thead>
             <tr>
@@ -28,10 +25,11 @@ Admin Page
                 <th>Last Name</th>
                 <th>Address</th>
                 <th>Phone Number</th>
-                <th>Violet</th>
+                <th>Violent</th>
                 <th>Probation</th>
                 <th>Alias</th>
-                <th>Delete</th>
+                <th></th>
+                <th></th>
             </tr>
         </thead>
         {% if empty %}
@@ -39,25 +37,139 @@ Admin Page
         </tbody>
         {% else %} 
         <tbody>
-            {% for firstName, lastName, criminal_id, alias, criminal_address, criminal_phonenum, violent, probation in zipped_data %}
-                <tr>
-                    <td>{{ criminal_id }}</td>
-                    <td>{{ firstName }}</td>
-                    <td>{{ lastName }}</td>
-                    <td>{{ criminal_address }}</td>
-                    <td>{{ criminal_phonenum }}</td>
-                    <td>{{ violent }}</td>
-                    <td>{{ probation }}</td>
-                    <td>{{ alias }}</td>
-                    <td> 
-                        <form action="{{ url_for('delete_criminal', criminal_id=criminal_id) }}" method="get">
-                            <button type="submit">Delete</button>
+            {% for firstName, lastName, criminal_id, alias, criminal_address, criminal_phonenum, violent, probation, edit in zipped_data %}
+                {% if edit %}
+                    <td>
+                        <input type="hidden" id="update-criminal-id"  value="{{criminal_id}}">
+                        {{ criminal_id }}
+                    </td>
+                    <td><input type="text" id="update-first-name" value="{{firstName}}"></td>
+                    <td><input type="text" id="update-last-name"  value="{{lastName}}"></td>
+                    <td><input type="text" id="update-address" value="{{criminal_address}}"></td>
+                    <td><input type="text" id="update-phone-number" value="{{criminal_phonenum}}"></td>
+                    <td><input type="number" id="update-violent" value="{{violent}}"></td>
+                    <td><input type="number" id="update-probation" value="{{probation}}"></td>
+                    <td><input type="text" id="update-alias" value="{{alias}}"></td>
+                    <td>
+                        <button id="criminal-update-button" class="logout-btn">Confirm</button>
+                    </td>
+                    <td>
+                        <form action="{{ url_for('admin_criminal') }}" method="post">
+                            <button  class="logout-btn">Cancel</button>
                         </form>
                     </td>
-                </tr>
+                {% else %}
+                    <tr>
+                        <td>{{ criminal_id }}</td>
+                        <td>{{ firstName }}</td>
+                        <td>{{ lastName }}</td>
+                        <td>{{ criminal_address }}</td>
+                        <td>{{ criminal_phonenum }}</td>
+                        <td>{{ violent }}</td>
+                        <td>{{ probation }}</td>
+                        <td>{{ alias }}</td>
+                        <td>
+                            <form action="{{ url_for('admin_criminal') }}" method="get">
+                                <input type="hidden" name="edit" value="{{ criminal_id }}">
+                                <button type="submit">Update</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form action="{{ url_for('delete_criminal', criminal_id=criminal_id) }}" method="get">
+                                <button type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endif %}
             {% endfor %}
+            <tr id="empty-row">
+                <td><input type="number" id="insert-criminal-id"></td>
+                <td><input type="text" id="insert-first-name"></td>
+                <td><input type="text" id="insert-last-name"></td>
+                <td><input type="text" id="insert-address"></td>
+                <td><input type="text" id="insert-phone-number"></td>
+                <td><input type="number" id="insert-violent"></td>
+                <td><input type="number" id="insert-probation"></td>
+                <td><input type="text" id="insert-alias"></td>
+            </tr>
         </tbody>
         {% endif %}
     </table>
+
+
+    <script>
+        document.getElementById("criminal-update-button").addEventListener("click", function() {
+            var fields = {
+                criminal_id : document.getElementById("update-criminal-id").value.trim(),
+                first_name : document.getElementById("update-first-name").value.trim(),
+                last_name : document.getElementById("update-last-name").value.trim(),
+                address : document.getElementById("update-address").value.trim(),
+                phone_number : document.getElementById("update-phone-number").value.trim(),
+                violent : document.getElementById("update-violent").value.trim(),
+                probation : document.getElementById("update-probation").value.trim(),
+                alias : document.getElementById("update-alias").value.trim(),
+            };
+
+            console.log(fields)
+            for (var key in fields) {
+                if (fields.hasOwnProperty(key) && fields[key] === "") {
+                    alert("Please fill in all columns before updating.");
+                    return;
+                }
+            }
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "{{ url_for('update_criminal') }}", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                console.log("Data updated successfully!");
+                location.href = "{{ url_for('admin_criminal') }}";
+            }
+            };
+            var data = JSON.stringify({
+                fields
+            });
+            xhr.send(data);
+        });
+    </script>
+
+    <button id="criminal-insert-button" class="logout-btn">Insert</button>
+
+    <script>
+        document.getElementById("criminal-insert-button").addEventListener("click", function() {
+            var fields = {
+                criminal_id : document.getElementById("insert-criminal-id").value.trim(),
+                first_name : document.getElementById("insert-first-name").value.trim(),
+                last_name : document.getElementById("insert-last-name").value.trim(),
+                address : document.getElementById("insert-address").value.trim(),
+                phone_number : document.getElementById("insert-phone-number").value.trim(),
+                violent : document.getElementById("insert-violent").value.trim(),
+                probation : document.getElementById("insert-probation").value.trim(),
+                alias : document.getElementById("insert-alias").value.trim(),
+            };
+
+            for (var key in fields) {
+                if (fields.hasOwnProperty(key) && fields[key] === "") {
+                    alert("Please fill in all columns before inserting.");
+                    return;
+                }
+            }
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "{{ url_for('insert_criminal') }}", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                console.log("Data inserted successfully!");
+                location.reload();
+            }
+            };
+            var data = JSON.stringify({
+                fields
+            });
+            xhr.send(data);
+        });
+    </script>
 </div>
 {% endblock %}

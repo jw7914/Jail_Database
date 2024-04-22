@@ -38,27 +38,50 @@ Admin Page
         </tbody>
         {% else %} 
         <tbody>
-            {% for badge_num, firstName, lastName, precinct, phone, status, type, address in zipped_data %}
-                <tr>
-                    <td>{{ badge_num }}</td>
-                    <td>{{ firstName }}</td>
-                    <td>{{ lastName }}</td>
-                    <td>{{ precinct }}</td>
-                    <td>{{ phone }}</td>
-                    <td>{{ status }}</td>
-                    <td>{{ type }}</td>
-                    <td>{{ address }}</td>
+            {% for badge_num, firstName, lastName, precinct, phone, status, type, address, edit in zipped_data %}
+                {% if edit %}
                     <td>
-                        <form action="{{ url_for('delete_officer', badge_number=badge_num) }}" method="get">
-                            <button type="submit">Edit</button>
-                        </form>
+                        <input type="hidden" id="update-badge-number"  value="{{badge_num}}">
+                        {{ badge_num }}
+                    </td>
+                    <td><input type="text" id="update-first-name" value="{{firstName}}"></td>
+                    <td><input type="text" id="update-last-name"  value="{{lastName}}"></td>
+                    <td><input type="number" id="update-precinct" value="{{precinct}}"></td>
+                    <td><input type="text" id="update-phone-number" value="{{phone}}"></td>
+                    <td><input type="text" id="update-status" value="{{status}}"></td>
+                    <td><input type="text" id="update-type" value="{{type}}"></td>
+                    <td><input type="text" id="update-address" value="{{address}}"></td>
+                    <td>
+                        <button id="officer-update-button" class="logout-btn">Confirm</button>
                     </td>
                     <td>
-                        <form action="{{ url_for('delete_officer', badge_number=badge_num) }}" method="get">
-                            <button type="submit">Delete</button>
+                        <form action="{{ url_for('admin_officer') }}" method="post">
+                            <button  class="logout-btn">Cancel</button>
                         </form>
                     </td>
-                </tr>
+                {% else %}
+                    <tr>
+                        <td>{{ badge_num }}</td>
+                        <td>{{ firstName }}</td>
+                        <td>{{ lastName }}</td>
+                        <td>{{ precinct }}</td>
+                        <td>{{ phone }}</td>
+                        <td>{{ status }}</td>
+                        <td>{{ type }}</td>
+                        <td>{{ address }}</td>
+                        <td>
+                            <form action="{{ url_for('admin_officer') }}" method="get">
+                                <input type="hidden" name="edit" value="{{ badge_num }}">
+                                <button type="submit">Update</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form action="{{ url_for('delete_officer', badge_number=badge_num) }}" method="get">
+                                <button type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endif %}
             {% endfor %}
         </tbody>
         {% endif %}
@@ -79,32 +102,33 @@ Admin Page
     <button id="officer-insert-button" class="logout-btn">Insert</button>
 
     <script>
-        document.getElementById("officer-insert-button").addEventListener("click", function() {
+        document.getElementById("officer-update-button").addEventListener("click", function() {
             var fields = {
-                badge_number : document.getElementById("insert-badge-num").value.trim(),
-                first_name : document.getElementById("insert-first-name").value.trim(),
-                last_name : document.getElementById("insert-last-name").value.trim(),
-                precinct : document.getElementById("insert-precinct").value.trim(),
-                phone_number : document.getElementById("insert-phone-number").value.trim(),
-                status : document.getElementById("insert-status").value.trim(),
-                type : document.getElementById("insert-type").value.trim(),
-                address : document.getElementById("insert-address").value.trim(),
+                badge_number : document.getElementById("update-badge-number").value,
+                first_name : document.getElementById("update-first-name").value.trim(),
+                last_name : document.getElementById("update-last-name").value.trim(),
+                precinct : document.getElementById("update-precinct").value.trim(),
+                phone_number : document.getElementById("update-phone-number").value.trim(),
+                status : document.getElementById("update-status").value.trim(),
+                type : document.getElementById("update-type").value.trim(),
+                address : document.getElementById("update-address").value.trim(),
             };
 
+            console.log(fields)
             for (var key in fields) {
                 if (fields.hasOwnProperty(key) && fields[key] === "") {
-                    alert("Please fill in all columns before inserting.");
+                    alert("Please fill in all columns before updating.");
                     return;
                 }
             }
 
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "{{ url_for('insert_officer') }}", true);
+            xhr.open("POST", "{{ url_for('update_officer') }}", true);
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.onreadystatechange = function() {
             if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                console.log("Data inserted successfully!");
-                location.reload();
+                console.log("Data updated successfully!");
+                location.href = "{{ url_for('admin_officer') }}";
             }
             };
             var data = JSON.stringify({
@@ -113,6 +137,42 @@ Admin Page
             xhr.send(data);
         });
     </script>
+
+<script>
+    document.getElementById("officer-insert-button").addEventListener("click", function() {
+        var fields = {
+            badge_number : document.getElementById("insert-badge-num").value.trim(),
+            first_name : document.getElementById("insert-first-name").value.trim(),
+            last_name : document.getElementById("insert-last-name").value.trim(),
+            precinct : document.getElementById("insert-precinct").value.trim(),
+            phone_number : document.getElementById("insert-phone-number").value.trim(),
+            status : document.getElementById("insert-status").value.trim(),
+            type : document.getElementById("insert-type").value.trim(),
+            address : document.getElementById("insert-address").value.trim(),
+        };
+
+        for (var key in fields) {
+            if (fields.hasOwnProperty(key) && fields[key] === "") {
+                alert("Please fill in all columns before inserting.");
+                return;
+            }
+        }
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "{{ url_for('insert_officer') }}", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+            console.log("Data inserted successfully!");
+            location.reload();
+        }
+        };
+        var data = JSON.stringify({
+            fields
+        });
+        xhr.send(data);
+    });
+</script>
 
 </div>
 {% endblock %}

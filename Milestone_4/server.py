@@ -386,9 +386,12 @@ def admin():
 	else:
 		redirect(url_for('home'))
 
-@app.route('/admin/officer')
+@app.route('/admin/officer', methods=['GET', 'POST'])
 def admin_officer():
 	if 'admin' in session:
+		edit_badge_number = -1
+		if request.method == 'GET':
+			edit_badge_number = request.args.get('edit', -1)
 		query = "SELECT * FROM OFFICER"
 		df = run_statement(query)
 		badge_number = []
@@ -399,6 +402,7 @@ def admin_officer():
 		activity_status = []
 		officer_type = []
 		officer_address = []
+		edit = []
 		for i, j in df.iterrows():
 			badge_number.append(j['badge_number'])
 			officer_first.append(j['officer_first'])
@@ -408,19 +412,23 @@ def admin_officer():
 			activity_status.append(j['activity_status'])
 			officer_type.append(j['officer_type'])
 			officer_address.append(j['officer_address'])
-			zipped_data = zip(badge_number, officer_first, officer_last, precinct, officer_phonenum, activity_status, officer_type, officer_address)
+			edit.append(1) if str(j['badge_number']) == edit_badge_number else edit.append(0)
 		if len(badge_number) == 0:
 			return render_template('admin_officer.html', empty=True)
 		else:
+			zipped_data = zip(badge_number, officer_first, officer_last, precinct, officer_phonenum, activity_status, officer_type, officer_address, edit)
 			return render_template('admin_officer.html', zipped_data=zipped_data)
 	else:
 		return redirect(url_for('home'))
 
-@app.route('/admin/criminal')
+@app.route('/admin/criminal', methods=['GET', 'POST'])
 def admin_criminal():
 	if 'admin' in session:
 		query = "SELECT * FROM CRIMINAL"
 		df = run_statement(query)
+		edit_criminal_id = -1
+		if request.method == 'GET':
+			edit_criminal_id = request.args.get('edit', -1)
 		criminal_first = []
 		criminal_last = []
 		criminal_id = []
@@ -429,6 +437,7 @@ def admin_criminal():
 		criminal_phonenum = []
 		violent = []
 		probation = []
+		edit = []
 		for i, j in df.iterrows():
 			criminal_first.append(j['criminal_first'])
 			criminal_last.append(j['criminal_last'])
@@ -438,10 +447,11 @@ def admin_criminal():
 			violent.append(j['violent_offender_stat'])
 			probation.append(j['probation_status'])
 			criminal_phonenum.append(j['criminal_phonenum'])
+			edit.append(1) if str(j['criminal_id']) == edit_criminal_id else edit.append(0)
 		if len(criminal_first) == 0:
 			return render_template("admin_criminal.html", empty=True)
 		else:
-			zipped_data = zip(criminal_first, criminal_last, criminal_id, alias, criminal_address, criminal_phonenum, violent, probation)
+			zipped_data = zip(criminal_first, criminal_last, criminal_id, alias, criminal_address, criminal_phonenum, violent, probation, edit)
 			return render_template("admin_criminal.html", zipped_data=zipped_data)
 	else:
 		return redirect(url_for('home'))
@@ -576,8 +586,6 @@ def delete_criminal(criminal_id):
 def insert_officer():
     if 'admin' not in session:
         return "Unauthorized", 401
-    if request.method != "POST":
-        return redirect(url_for('admin_officer'))
 
     data = request.json
     badge_number = data['fields']['badge_number']
@@ -594,9 +602,73 @@ def insert_officer():
     cursor.execute(query, (badge_number, first_name, last_name, precinct, phone_number, status, type_, address))
     conn.commit()
     cursor.close()
-    response = jsonify({"message": "Insert Succesful"})
     return redirect(url_for('admin_officer'))
 
+@app.route('/insert_criminal', methods=["POST"])
+def insert_criminal():
+    if 'admin' not in session:
+        return "Unauthorized", 401
+
+    data = request.json
+    criminal_id = data['fields']['criminal_id']
+    first_name = data['fields']['first_name']
+    last_name = data['fields']['last_name']
+    address = data['fields']['address']
+    phone_number = data['fields']['phone_number']
+    violent = data['fields']['violent']
+    probation = data['fields']['probation']
+    alias = data['fields']['alias']
+    cursor = conn.cursor()
+
+    query = "INSERT INTO criminal (criminal_id, criminal_first, criminal_last, criminal_address, criminal_phonenum, violent_offender_stat, probation_status, alias) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+    cursor.execute(query, (criminal_id, first_name, last_name, address, phone_number, violent, probation, alias))
+    conn.commit()
+    cursor.close()
+    return redirect(url_for('admin_criminal'))
+
+@app.route('/update_officer', methods=['POST'])
+def update_officer():
+    if 'admin' not in session:
+        return "Unauthorized", 401
+
+    data = request.json
+    badge_num = data['fields']['badge_number']
+    first_name = data['fields']['first_name']
+    last_name = data['fields']['last_name']
+    precinct = data['fields']['precinct']
+    phone_number = data['fields']['phone_number']
+    status = data['fields']['status']
+    type_ = data['fields']['type']
+    address = data['fields']['address']
+    cursor = conn.cursor()
+
+    query = "UPDATE officer SET officer_first = %s, officer_last = %s, precinct = %s, officer_phonenum = %s, activity_status = %s, officer_type = %s, officer_address = %s WHERE badge_number = %s"
+    cursor.execute(query, (first_name, last_name, precinct, phone_number, status, type_, address, badge_num))
+    conn.commit()
+    cursor.close()
+    return redirect(url_for('admin_officer'))
+
+@app.route('/update_criminal', methods=['POST'])
+def update_criminal():
+    if 'admin' not in session:
+        return "Unauthorized", 401
+
+    data = request.json
+    criminal_id = data['fields']['criminal_id']
+    first_name = data['fields']['first_name']
+    last_name = data['fields']['last_name']
+    address = data['fields']['address']
+    phone_number = data['fields']['phone_number']
+    violent = data['fields']['violent']
+    probation = data['fields']['probation']
+    alias = data['fields']['alias']
+    cursor = conn.cursor()
+
+    query = "UPDATE criminal SET criminal_first = %s, criminal_last = %s, criminal_address = %s, criminal_phonenum = %s, violent_offender_stat = %s, probation_status = %s, alias = %s WHERE criminal_id = %s"
+    cursor.execute(query, (first_name, last_name, address, phone_number, violent, probation, alias, criminal_id))
+    conn.commit()
+    cursor.close()
+    return redirect(url_for('admin_criminal'))
 
 if __name__ == "__main__":
 	app.run('127.0.0.1', 5000, debug = True)
