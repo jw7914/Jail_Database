@@ -12,39 +12,23 @@ app = Flask(__name__)
 app.secret_key = 'jason'
 
 #Configure MySQL and connect to certain user defualt too root user
-def connectDB(role = 'public_user', pw = ''):
-	if role == 'admin':
-		try:
-			conn = pymysql.connect(host='localhost',
-						  		user='root',
-								password=pw,
-								db='jail',
-								charset='utf8mb4',
-								cursorclass=pymysql.cursors.DictCursor)
-			print("==================\nConnected to the database!\n==================")
-			print('ADMIN')
-		except pymysql.Error as e:
-			print(f"Error connecting to MySQL: {e}")
-			# Raise the exception to handle it further up the call stack if needed
-			raise
-	else:
-		try:
-			conn = pymysql.connect(host='localhost',
-								user=role,
-								password=pw,
-								db='jail',
-								charset='utf8mb4',
-								cursorclass=pymysql.cursors.DictCursor)
-			print("==================\nConnected to the database!\n==================")
-			print(role)
-			return conn
-		except pymysql.Error as e:
-			print(f"Error connecting to MySQL: {e}")
-			# Raise the exception to handle it further up the call stack if needed
-			raise
+def connectDB(role = 'Admin_Role', pw = ''):
+	try:
+		conn = pymysql.connect(host='localhost',
+							user=role,
+							password=pw,
+							db='jail',
+							charset='utf8mb4',
+							cursorclass=pymysql.cursors.DictCursor)
+		print("==================\nConnected to the database!\n==================")
+		return conn
+	except pymysql.Error as e:
+		print(f"Error connecting to MySQL: {e}")
+		# Raise the exception to handle it further up the call stack if needed
+		raise
 
-#Connect to lowest permission connection
-conn = connectDB(role='public_user', pw='')
+#Connect to root user -- probably change to lowest permission privilege and then work way up in each route
+conn = connectDB(role='Admin_Role', pw='password')
 
 #Default if only query is passed then it will execute with root user with no arguments
 #Runs query and returns values in a Dataframe for traversing purposes
@@ -110,7 +94,6 @@ def login(username, password):
 		return False
 
 def admin_auth(username, password):
-	conn = connectDB(role='Admin_Role', pw='password')
 	cursor = conn.cursor()
 	query = "SELECT password FROM ADMINS WHERE username = %s AND password = SHA(%s);"
 	cursor.execute(query, (username, password))
@@ -177,6 +160,7 @@ def home():
 	if "admin" in session:
 		return redirect(url_for("admin"))
 	if request.method == 'GET': #Basically if searching through public inmate
+		conn = connectDB(role='public_user', pw='')
 		first_name_input = request.args.get('first-name', '')
 		last_name_input = request.args.get('last-name', '')
 		alias_input = request.args.get('alias', '')
@@ -373,14 +357,14 @@ def admin_logout():
 	return redirect(url_for("home"))
 
 
-@app.route('/login', methods=['POST', 'GET'])
+@app.route('/admin/login', methods=['POST', 'GET'])
 def admin_login():
-	
 	if request.method == 'POST':
 		username = request.form['admin_username']
 		password = request.form['admin_password']
 		if admin_auth(username, password):
 			session['admin'] = username
+			connectDB(role='Admin_Role', pw='password')
 			return redirect(url_for("admin"))
 		else:
 			flash("Wrong Credentials")
@@ -390,6 +374,7 @@ def admin_login():
 @app.route('/admin')
 def admin():
 	if 'admin' in session:
+		conn = connectDB(role='Admin_Role', pw='password')
 		query = "SELECT username, badge_number FROM users"
 		badge_numbers = []
 		usernames = []
@@ -405,6 +390,7 @@ def admin():
 @app.route('/admin/officer', methods=['GET', 'POST'])
 def admin_officer():
 	if 'admin' in session:
+		conn = connectDB(role='Admin_Role', pw='password')
 		edit_badge_number = -1
 		if request.method == 'GET':
 			edit_badge_number = request.args.get('edit', -1)
@@ -440,6 +426,7 @@ def admin_officer():
 @app.route('/admin/criminal', methods=['GET', 'POST'])
 def admin_criminal():
 	if 'admin' in session:
+		conn = connectDB(role='Admin_Role', pw='password')
 		query = "SELECT * FROM CRIMINAL"
 		df = run_statement(query)
 		edit_criminal_id = -1
