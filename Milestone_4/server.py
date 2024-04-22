@@ -17,7 +17,7 @@ def connectDB(role = 'public_user', pw = ''):
 		try:
 			conn = pymysql.connect(host='localhost',
 						  		user='root',
-								password=pw,
+								password='',
 								db='jail',
 								charset='utf8mb4',
 								cursorclass=pymysql.cursors.DictCursor)
@@ -43,23 +43,28 @@ def connectDB(role = 'public_user', pw = ''):
 			# Raise the exception to handle it further up the call stack if needed
 			raise
 
+class Connection:
+	def __init__(self, conn, t):
+		self.conn = conn
+		self.t = t
 #Connect to lowest permission connection
-conn = connectDB(role='public_user', pw='')
+connection = Connection(connectDB(role='public_user', pw=''), "p")
 
 #Default if only query is passed then it will execute with root user with no arguments
 #Runs query and returns values in a Dataframe for traversing purposes
 def run_statement(query, arguments=None):
-	cursor = conn.cursor()
+	print(connection.t + "======================================================================================")
+	cursor = connection.conn.cursor()
 	if arguments == None:
 		cursor.execute(query)
 		results = cursor.fetchall()
-		conn.commit()
+		connection.conn.commit()
 		column_names = [desc[0] for desc in cursor.description]
 		df = PD.DataFrame(results, columns=column_names)
 	else:
 		cursor.execute(query, arguments)
 		results = cursor.fetchall()
-		conn.commit()
+		connection.conn.commit()
 		column_names = list(set(desc[0] for desc in cursor.description)) #Syntax to remove duplicate columns from joining tables
 		df = PD.DataFrame(results, columns=column_names)
 	cursor.close()
@@ -68,7 +73,7 @@ def run_statement(query, arguments=None):
 #Checking for valid registration creds
 def register_auth(username, id):
 	#Check if username or badge number exists
-	cursor = conn.cursor()
+	cursor = connection.conn.cursor()
 	query = "SELECT * FROM users WHERE username = %s OR badge_number = %s;"
 	cursor.execute(query, (username, id))
 	user = cursor.fetchone()
@@ -77,7 +82,7 @@ def register_auth(username, id):
 		return(("User already exists", False))
 	cursor.close()
 	#Check if they are an officer
-	cursor = conn.cursor()
+	cursor = connection.conn.cursor()
 	query = "SELECT * FROM officer WHERE badge_number = %s;"
 	cursor.execute(query, (id))
 	auth = cursor.fetchone()
@@ -91,15 +96,15 @@ def register_auth(username, id):
 #Register by putting values into users table
 def register(username, password, id):
 	hashed_password = generate_password_hash(password)
-	cursor = conn.cursor()
+	cursor = connection.conn.cursor()
 	query = "INSERT INTO users (username, password, badge_number) VALUES (%s, %s, %s)"
 	cursor.execute(query, (username, hashed_password, id))
-	conn.commit()
+	connection.conn.commit()
 	cursor.close()
 
 #Reference user table to see if they are registered. login if registered
 def login(username, password):
-	cursor = conn.cursor()
+	cursor = connection.conn.cursor()
 	query = "SELECT password FROM users WHERE username = %s;"
 	cursor.execute(query, (username))
 	user = cursor.fetchone()
@@ -110,7 +115,7 @@ def login(username, password):
 		return False
 
 def admin_auth(username, password):
-	cursor = conn.cursor()
+	cursor = connection.conn.cursor()
 	query = "SELECT password FROM ADMINS WHERE username = %s AND password = SHA(%s);"
 	cursor.execute(query, (username, password))
 	admin = cursor.fetchone()
@@ -214,6 +219,8 @@ def home():
 			cursor = conn.cursor()
 			cursor.execute(query, (username,))
 			details = cursor.fetchone()
+			connection.conn = connectDB(role='Officer_Role', pw='password')
+			connection.t = "o"
 			session['badge_number'] = details['badge_number']
 			return redirect(url_for("officer_home", badge_number=details['badge_number']))
 		else:
@@ -331,7 +338,7 @@ def officer_home(badge_number):
                 # Render the template with zipped_data
                 return render_template('officer_search_results.html', zipped_data=zipped_data)
 
-    cursor = conn.cursor()
+    cursor = connection.conn.cursor()
     query = "SELECT * FROM officer WHERE officer.badge_number = %s;"
     cursor.execute(query, (badge_number))
     result = cursor.fetchone()
@@ -362,13 +369,15 @@ def officer_home(badge_number):
 @app.route('/logout/officer')
 def officer_logout():
 	session.pop("badge_number", None)
-	connectDB(role='public_user', pw='')
+	connection.conn = connectDB(role='public_user', pw='')
+	connection.t = "p"
 	return redirect(url_for("home"))
 
 @app.route('/logout/admin', methods=['POST'])
 def admin_logout():
 	session.pop("admin", None)
-	connectDB(role='public_user', pw='')
+	connection.conn = connectDB(role='public_user', pw='')
+	connection.t = "p"
 	return redirect(url_for("home"))
 
 
@@ -378,8 +387,9 @@ def admin_login():
 		username = request.form['admin_username']
 		password = request.form['admin_password']
 		if admin_auth(username, password):
+			connection.conn = connectDB(role='admin')
+			connection.t = "a"
 			session['admin'] = username
-			conn = connectDB(role='Admin_Role', pw='password')
 			return redirect(url_for("admin"))
 		else:
 			flash("Wrong Credentials")
@@ -388,6 +398,8 @@ def admin_login():
 @app.route('/admin')
 def admin():
 	if 'admin' in session:
+		connection.conn = connectDB(role='admin')
+		connection.t = "a"
 		query = "SELECT username, badge_number FROM users"
 		badge_numbers = []
 		usernames = []
@@ -403,6 +415,7 @@ def admin():
 @app.route('/admin/officer', methods=['GET', 'POST'])
 def admin_officer():
 	if 'admin' in session:
+		connection.conn = connectDB(role='admin')
 		edit_badge_number = -1
 		if request.method == 'GET':
 			edit_badge_number = request.args.get('edit', -1)
@@ -489,10 +502,10 @@ def make_payment():
     if request.method == 'POST':
         amount = request.form['payment_amount']
         criminal_id = request.form['criminal_id']
-        cursor = conn.cursor()
+        cursor = connection.conn.cursor()
         query = "UPDATE fine SET paid_amount = paid_amount + %s WHERE criminal_id = %s"
         cursor.execute(query, (amount, criminal_id))
-        conn.commit()
+        connection.conn.commit()
         cursor.close()
     return redirect(url_for('criminal_info', criminal_id=criminal_id))
 
@@ -565,10 +578,10 @@ def criminal_info(criminal_id):
 @app.route('/delete/<badge_num>', methods=["GET"])
 def delete_user(badge_num):
 	if 'admin' in session:
-		cursor = conn.cursor()
+		cursor = connection.conn.cursor()
 		query = "DELETE FROM users WHERE badge_number = %s;"
 		cursor.execute(query, (badge_num))
-		conn.commit()
+		connection.conn.commit()
 		cursor.close()
 		return redirect(url_for('admin'))
 	else:
@@ -577,22 +590,22 @@ def delete_user(badge_num):
 @app.route('/delete_officer/<badge_number>', methods=["GET"])
 def delete_officer(badge_number):
 	if 'admin' in session:
-		cursor = conn.cursor()
+		cursor = connection.conn.cursor()
 		query = "SELECT badge_number FROM users WHERE badge_number = %s"
 		cursor.execute(query, (badge_number))
 		inusers = cursor.fetchone()
-		conn.commit()
+		connection.conn.commit()
 		cursor.close()
 		if inusers:
-			cursor = conn.cursor()
+			cursor = connection.conn.cursor()
 			query = "DELETE FROM users WHERE badge_number = %s;"
 			cursor.execute(query, (badge_number))
-			conn.commit()
+			connection.conn.commit()
 			cursor.close()
-		cursor = conn.cursor()
+		cursor = connection.conn.cursor()
 		query = "DELETE FROM officer WHERE badge_number = %s;"
 		cursor.execute(query, (badge_number))
-		conn.commit()
+		connection.conn.commit()
 		cursor.close()
 		return redirect(url_for('admin_officer'))
 	else:
@@ -601,10 +614,10 @@ def delete_officer(badge_number):
 @app.route('/delete_criminal/<criminal_id>', methods=["GET"])
 def delete_criminal(criminal_id):
 	if 'admin' in session:
-		cursor = conn.cursor()
+		cursor = connection.conn.cursor()
 		query = "DELETE FROM CRIMINAL WHERE criminal_id = %s"
 		cursor.execute(query, (criminal_id))
-		conn.commit()
+		connection.conn.commit()
 		cursor.close()
 		return redirect(url_for('admin_criminal'))
 	else:
@@ -624,11 +637,11 @@ def insert_officer():
     status = data['fields']['status']
     type_ = data['fields']['type']
     address = data['fields']['address']
-    cursor = conn.cursor()
+    cursor = connection.conn.cursor()
 
     query = "INSERT INTO officer (badge_number, officer_first, officer_last, precinct, officer_phonenum, activity_status, officer_type, officer_address) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
     cursor.execute(query, (badge_number, first_name, last_name, precinct, phone_number, status, type_, address))
-    conn.commit()
+    connection.conn.commit()
     cursor.close()
     return redirect(url_for('admin_officer'))
 
@@ -646,11 +659,11 @@ def insert_criminal():
     violent = data['fields']['violent']
     probation = data['fields']['probation']
     alias = data['fields']['alias']
-    cursor = conn.cursor()
+    cursor = connection.conn.cursor()
 
     query = "INSERT INTO criminal (criminal_id, criminal_first, criminal_last, criminal_address, criminal_phonenum, violent_offender_stat, probation_status, alias) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
     cursor.execute(query, (criminal_id, first_name, last_name, address, phone_number, violent, probation, alias))
-    conn.commit()
+    connection.conn.commit()
     cursor.close()
     return redirect(url_for('admin_criminal'))
 
@@ -668,11 +681,11 @@ def update_officer():
     status = data['fields']['status']
     type_ = data['fields']['type']
     address = data['fields']['address']
-    cursor = conn.cursor()
+    cursor = connection.conn.cursor()
 
     query = "UPDATE officer SET officer_first = %s, officer_last = %s, precinct = %s, officer_phonenum = %s, activity_status = %s, officer_type = %s, officer_address = %s WHERE badge_number = %s"
     cursor.execute(query, (first_name, last_name, precinct, phone_number, status, type_, address, badge_num))
-    conn.commit()
+    connection.conn.commit()
     cursor.close()
     return redirect(url_for('admin_officer'))
 
@@ -690,11 +703,11 @@ def update_criminal():
     violent = data['fields']['violent']
     probation = data['fields']['probation']
     alias = data['fields']['alias']
-    cursor = conn.cursor()
+    cursor = connection.conn.cursor()
 
     query = "UPDATE criminal SET criminal_first = %s, criminal_last = %s, criminal_address = %s, criminal_phonenum = %s, violent_offender_stat = %s, probation_status = %s, alias = %s WHERE criminal_id = %s"
     cursor.execute(query, (first_name, last_name, address, phone_number, violent, probation, alias, criminal_id))
-    conn.commit()
+    connection.conn.commit()
     cursor.close()
     return redirect(url_for('admin_criminal'))
 
