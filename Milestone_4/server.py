@@ -12,10 +12,10 @@ app = Flask(__name__)
 app.secret_key = 'jason'
 
 #Configure MySQL and connect to certain user defualt too root user
-def connectDB(u = 'root', pw = ''):
+def connectDB(role = 'public_user', pw = ''):
 	try:
 		conn = pymysql.connect(host='localhost',
-							user=u,
+							user=role,
 							password=pw,
 							db='jail',
 							charset='utf8mb4',
@@ -28,7 +28,7 @@ def connectDB(u = 'root', pw = ''):
 		raise
 
 #Connect to root user -- probably change to lowest permission privilege and then work way up in each route
-conn = connectDB()
+conn = connectDB(role='public_user', pw='')
 
 #Default if only query is passed then it will execute with root user with no arguments
 #Runs query and returns values in a Dataframe for traversing purposes
@@ -171,8 +171,8 @@ def home():
 			name = []
 			criminal_id = []
 			alias = []
-			criminal_address = []
-			criminal_phonenum = []
+			# criminal_address = []
+			# criminal_phonenum = []
 			violent = []
 			probation = []
 
@@ -182,24 +182,25 @@ def home():
 				name.append(j['criminal_first'] + ' ' + j['criminal_last'])
 				alias.append(j['alias'])
 				criminal_id.append(j['criminal_id'])
-				criminal_address.append(j['criminal_address'])
+				# criminal_address.append(j['criminal_address'])
 				violent.append(j['violent_offender_stat'])
 				probation.append(j['probation_status'])
-				criminal_phonenum.append(j['criminal_phonenum'])
+				# criminal_phonenum.append(j['criminal_phonenum'])
 			if (len(name) == 0):
 				return render_template ('inmate_search_results.html', empty=True)
 			else:
 				# Zip the lists together
-				zipped_data = zip(name, criminal_id, alias, criminal_address, criminal_phonenum, violent, probation)
+				zipped_data = zip(name, criminal_id, alias, violent, probation)
 				# Render the template with zipped_data
-				return render_template('inmate_search_results.html', zipped_data=zipped_data)
+				return render_template('public_inmate.html', zipped_data=zipped_data)
 	elif request.method == 'POST': #If logging in
 		username = request.form['username']
 		password = request.form['password']
-		if login(username, password):
+		if login(username, password, role='Officer_Role'):
 			query = "SELECT officer_first, badge_number FROM OFFICER WHERE badge_number IN (SELECT badge_number FROM users WHERE username = %s)"
+			conn = connectDB(role='Officer_Role', pw='password')
 			cursor = conn.cursor()
-			cursor.execute(query, (username))
+			cursor.execute(query, (username,))
 			details = cursor.fetchone()
 			session['badge_number'] = details['badge_number']
 			return redirect(url_for("officer_home", badge_number=details['badge_number']))
@@ -283,11 +284,11 @@ def officer_home(badge_number):
                 probation.append(j['probation_status'])
                 criminal_phonenum.append(j['criminal_phonenum'])
             if (len(name) == 0):
-                return render_template ('inmate_search_results.html', empty=True)
+                return render_template ('private_inmate.html', empty=True)
             else:
                 # Zip the lists together
                 zipped_data = zip(name, criminal_id, alias, criminal_address, criminal_phonenum, violent, probation)
-                return render_template('inmate_search_results.html', zipped_data=zipped_data)
+                return render_template('private_inmate.html', zipped_data=zipped_data)
 
         if search_type == "officer":
             search_args = list([request.form[field] if request.form[field] != "" else "" for field in officer_search_fields])
@@ -349,11 +350,13 @@ def officer_home(badge_number):
 @app.route('/logout/officer')
 def officer_logout():
 	session.pop("badge_number", None)
+	conn = connectDB(role='public_user', pw='')
 	return redirect(url_for("home"))
 
 @app.route('/logout/admin', methods=['POST'])
 def admin_logout():
 	session.pop("admin", None)
+	conn = connectDB(role='public_user', pw='')
 	return redirect(url_for("home"))
 
 
