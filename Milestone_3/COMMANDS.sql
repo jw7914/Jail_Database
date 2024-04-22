@@ -128,6 +128,15 @@ CREATE TABLE ADMINS(
     PRIMARY KEY(id)
 );
 
+-- Table for payments
+CREATE TABLE PAYMENT_HISTORY(
+    payment_id INT AUTO_INCREMENT,
+    case_id INT REFERENCES FINE(case_id),
+    payment_amt FLOAT,
+    payment_timestamp timestamp default (current_timestamp()),
+    PRIMARY KEY(payment_id, case_id)
+);
+
 -- INSERT STATEMENTS
 -- CRIMINAL table entries
 INSERT INTO CRIMINAL (criminal_id, criminal_first, criminal_last, criminal_address, criminal_phonenum, violent_offender_stat, probation_status, alias)
@@ -409,6 +418,9 @@ VALUES
 ("Rielle", SHA("Rielle")),
 ("Alex", SHA("Alex"));
 
+-- starting id for payment history
+-- INSERT INTO PAYMENT_HISTORY (f_case_id, payment_amt)
+-- VALUES (1, 0);
 -- SQL CODE
 DELIMITER //
 -- SEARCHES/INFO DISPLAY (No triggers needed)
@@ -532,43 +544,48 @@ begin
     WHERE officer.officer_first LIKE first AND officer.officer_last LIKE last AND officer.type LIKE 'arresting';
 end //
 
--- Display info for all types of crimes
--- SELECT crime.crime_code, crime.classification, crime.crime_description
--- FROM crime
-
 -- FUNCTIONS/TRIGGERS
 -- Make payments: Function
-CREATE FUNCTION make_payment(payment FLOAT, c_id INT) RETURNS FLOAT DETERMINISTIC
+CREATE OR REPLACE PROCEDURE make_payment(in payment FLOAT, in c_id INT)
 BEGIN
     DECLARE amt_owed FLOAT;
     DECLARE fin_amt FLOAT;
 
     SELECT (fine_amount + court_fee - paid_amount) INTO amt_owed
     FROM fine
-    WHERE case_id = c_id;
+    WHERE FINE.case_id = c_id;
 
     UPDATE fine 
     SET paid_amount = paid_amount + payment
-    WHERE case_id = c_id;
+    WHERE FINE.case_id = c_id;
 
-    SELECT amt_owed - payment INTO fin_amt;
+    SET fin_amt = amt_owed - payment;
+    SELECT fin_amt;
 
-    RETURN fin_amt;
 END //
 
-CREATE PROCEDURE new_appeal(IN caseId INT, IN crim_id INT) 
+DROP TRIGGER IF EXISTS new_payment //
+CREATE TRIGGER new_payment
+BEFORE UPDATE
+ON fine
+FOR EACH ROW
+begin
+    INSERT INTO PAYMENT_HISTORY values(NULL, new.case_id, new.paid_amount, NULL);
+END //
+
+CREATE OR REPLACE PROCEDURE new_appeal(IN caseId INT, IN crim_id INT) 
 begin
     DECLARE new_app_ID INT;
 
-    SELECT COUNT(DISTINCT appeal.appeal_id) INTO new_app_ID
-    FROM appeal;
+    SELECT COUNT(DISTINCT APPEAL.appeal_id) INTO new_app_ID
+    FROM APPEAL;
 
-    IF appeal.num_appeal_remaining > 0 AND caseId IS NOT NULL then
-        UPDATE appeal SET num_appeal_remaining = num_appeal_remaining - 1
-        WHERE appeal.case_id = caseId;
+    IF APPEAL.num_appeal_remaining > 0 AND caseId IS NOT NULL then
+        UPDATE APPEAL SET num_appeal_remaining = num_appeal_remaining - 1
+        WHERE APPEAL.case_id = caseId;
 
         SET new_app_ID = new_app_ID + 1;
-        INSERT INTO appeal VALUES(new_app_ID, crim_id, caseId, num_appeal);
+        INSERT INTO APPEAL VALUES(new_app_ID, crim_id, caseId, num_appeal);
     END IF;
 end //
 
