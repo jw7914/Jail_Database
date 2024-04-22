@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}
+Inmate Search Results
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='./css/search.css') }}">    
+{% endblock %}
+{% block body %}
+<nav class="navbar">
+    <ul>
+        <li><a href="/">Home</a></li>
+    </ul>
+</nav>
+{% if empty %}
+    <h1>No Results Found</h1>
+{% else %}
+    <div class="container">
+        <h1>Search Results</h1>
+        {% for name, criminal_id, alias, violent, probation in zipped_data %}
+        <ul class="results-list">
+                <li class="result-item">
+                    <h2><a href="{{url_for('criminal_info', criminal_id=criminal_id)}}">{{ name }}</a></h2>
+                    <p><strong>Criminal ID:</strong> {{ criminal_id }}</p>
+                    <p><strong>Alias:</strong> {{ alias }}</p>
+                    <p><strong>Violent Offender:</strong> {% if violent %}&#10004; {% else %} &#10005;{% endif %}</p>
+                    <p><strong>Probation Status:</strong> {% if probation %}&#10004; {% else %} &#10005;{% endif %}</p>
+                </li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+    
+{% endblock %}

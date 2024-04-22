@@ -117,6 +117,7 @@ CREATE TABLE USERS(
     username VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     badge_number INT,
+    role CHAR(30) DEFAULT 'Officer_Role',
     FOREIGN KEY (badge_number) REFERENCES officer(badge_number),
     PRIMARY KEY(id)
 );
@@ -125,6 +126,7 @@ CREATE TABLE ADMINS(
     id INT AUTO_INCREMENT,
     username VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
+    role CHAR(30) DEFAULT 'Admin_Role',
     PRIMARY KEY(id)
 );
 
