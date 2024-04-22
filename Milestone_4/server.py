@@ -13,11 +13,11 @@ app.secret_key = 'jason'
 
 #Configure MySQL and connect to certain user defualt too root user
 def connectDB(role = 'public_user', pw = ''):
-	if role == 'admin':
+	if role == 'Admin_Role':
 		try:
 			conn = pymysql.connect(host='localhost',
-						  		user='root',
-								password='',
+						  		user=role,
+								password=pw,
 								db='jail',
 								charset='utf8mb4',
 								cursorclass=pymysql.cursors.DictCursor)
@@ -110,6 +110,8 @@ def login(username, password):
 	user = cursor.fetchone()
 	cursor.close()
 	if user and check_password_hash(user['password'], password):
+		connection.conn = connectDB(role='Officer_Role', pw='password')
+		connection.t = "o"
 		return True
 	else:
 		return False
@@ -121,6 +123,7 @@ def admin_auth(username, password):
 	admin = cursor.fetchone()
 	cursor.close()
 	if admin:
+		connection.conn = connectDB(role='Admin_Role', pw='password')
 		return True
 	else:
 		return False
@@ -215,12 +218,9 @@ def home():
 		password = request.form['password']
 		if login(username, password):
 			query = "SELECT officer_first, badge_number FROM OFFICER WHERE badge_number IN (SELECT badge_number FROM users WHERE username = %s)"
-			conn = connectDB(role='Officer_Role', pw='password')
-			cursor = conn.cursor()
+			cursor = connection.conn.cursor()
 			cursor.execute(query, (username,))
 			details = cursor.fetchone()
-			connection.conn = connectDB(role='Officer_Role', pw='password')
-			connection.t = "o"
 			session['badge_number'] = details['badge_number']
 			return redirect(url_for("officer_home", badge_number=details['badge_number']))
 		else:
@@ -244,6 +244,22 @@ def register_route():
 			flash(message)
 			return render_template('register.html')
 	return render_template('register.html')
+
+@app.route('/admin')
+def admin():
+	if 'admin' in session:
+		connection.t = "a"
+		query = "SELECT username, badge_number FROM users"
+		badge_numbers = []
+		usernames = []
+		df = run_statement(query)
+		for i, j in df.iterrows():
+			badge_numbers.append(j['badge_number'])
+			usernames.append(j['username'])
+		zipped_data = zip(badge_numbers, usernames)
+		return render_template('admin.html', zipped_data=zipped_data)
+	else:
+		redirect(url_for('home'))
 
 @app.route("/<badge_number>", methods=['POST', 'GET'])
 def officer_home(badge_number):
@@ -387,7 +403,6 @@ def admin_login():
 		username = request.form['admin_username']
 		password = request.form['admin_password']
 		if admin_auth(username, password):
-			connection.conn = connectDB(role='admin')
 			connection.t = "a"
 			session['admin'] = username
 			return redirect(url_for("admin"))
@@ -395,27 +410,10 @@ def admin_login():
 			flash("Wrong Credentials")
 	return render_template("admin_login.html")
 
-@app.route('/admin')
-def admin():
-	if 'admin' in session:
-		connection.conn = connectDB(role='admin')
-		connection.t = "a"
-		query = "SELECT username, badge_number FROM users"
-		badge_numbers = []
-		usernames = []
-		df = run_statement(query)
-		for i, j in df.iterrows():
-			badge_numbers.append(j['badge_number'])
-			usernames.append(j['username'])
-		zipped_data = zip(badge_numbers, usernames)
-		return render_template('admin.html', zipped_data=zipped_data)
-	else:
-		redirect(url_for('home'))
 
 @app.route('/admin/officer', methods=['GET', 'POST'])
 def admin_officer():
 	if 'admin' in session:
-		connection.conn = connectDB(role='admin')
 		edit_badge_number = -1
 		if request.method == 'GET':
 			edit_badge_number = request.args.get('edit', -1)
