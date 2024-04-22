@@ -26,12 +26,10 @@ FROM SENTENCING;
 
 CREATE ROLE Civilian;
 
-REVOKE ALL ON jail.* FROM Civilian;
-
-GRANT SELECT ON jail.civ_inmate_view TO PUBLIC;
-GRANT SELECT ON jail.civ_appeal_view TO PUBLIC;
-GRANT SELECT ON jail.civ_charge_view TO PUBLIC;
-GRANT SELECT ON jail.civ_sentence_view TO PUBLIC;
+GRANT SELECT ON jail.civ_inmate_view TO Civilian;
+GRANT SELECT ON jail.civ_appeal_view TO Civilian;
+GRANT SELECT ON jail.civ_charge_view TO Civilian;
+GRANT SELECT ON jail.civ_sentence_view TO Civilian;
 
 
 
@@ -41,11 +39,10 @@ GRANT SELECT ON jail.civ_sentence_view TO PUBLIC;
 
 CREATE ROLE Officer_Role;
 
-REVOKE ALL ON jail.USERS FROM Officer_Role;
-REVOKE INSERT, UPDATE, DELETE ON jail.* FROM Officer_Role;
+GRANT SELECT ON jail.* TO Officer_Role;
 
 CREATE USER 'officer'@'localhost' IDENTIFIED BY 'password';
-GRANT Officer_Role to 'officer'
+GRANT Officer_Role to 'officer'@'localhost';
 
 -- Admin view = root user nothing to be done
 -- Overall manager to manage officers and assign them to certain things
