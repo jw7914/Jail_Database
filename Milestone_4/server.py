@@ -23,6 +23,7 @@ def connectDB(role = 'public_user', pw = ''):
 								cursorclass=pymysql.cursors.DictCursor)
 			print("==================\nConnected to the database!\n==================")
 			print('ADMIN')
+			return conn
 		except pymysql.Error as e:
 			print(f"Error connecting to MySQL: {e}")
 			# Raise the exception to handle it further up the call stack if needed
