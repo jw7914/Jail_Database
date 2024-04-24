@@ -21,8 +21,6 @@ def connectDB(role = 'public_user', pw = ''):
 								db='jail',
 								charset='utf8mb4',
 								cursorclass=pymysql.cursors.DictCursor)
-			print("==================\nConnected to the database!\n==================")
-			print('ADMIN')
 			return conn
 		except pymysql.Error as e:
 			print(f"Error connecting to MySQL: {e}")
@@ -36,8 +34,6 @@ def connectDB(role = 'public_user', pw = ''):
 								db='jail',
 								charset='utf8mb4',
 								cursorclass=pymysql.cursors.DictCursor)
-			print("==================\nConnected to the database!\n==================")
-			print(role)
 			return conn
 		except pymysql.Error as e:
 			print(f"Error connecting to MySQL: {e}")
@@ -54,7 +50,6 @@ connection = Connection(connectDB(role='public_user', pw=''), "p")
 #Default if only query is passed then it will execute with root user with no arguments
 #Runs query and returns values in a Dataframe for traversing purposes
 def run_statement(query, arguments=None):
-	print(connection.t + "======================================================================================")
 	cursor = connection.conn.cursor()
 	if arguments == None:
 		cursor.execute(query)
@@ -130,7 +125,6 @@ def admin_auth(username, password):
 		return False
 
 def search_criminal(first_name="", last_name="", alias="", case_id=""):
-    print("RECEIVED:", first_name, "|", last_name, "|", alias, "|", case_id)
     df = PD.DataFrame()
     query = "SELECT * FROM criminal INNER JOIN CRIME_CASE ON CRIMINAL.criminal_id = CRIME_CASE.criminal_id WHERE"
     params = []
@@ -147,7 +141,6 @@ def search_criminal(first_name="", last_name="", alias="", case_id=""):
         query += " AND criminal.alias = %s" if len(params) > 0 else " criminal.criminal_alias = %s"
         params.append(alias)
     if len(params) == 0:
-        print("ERROR")
         return df
 
     query += ";"
@@ -168,7 +161,6 @@ def search_officer(first_name, last_name, badge_number):
         query += " AND officer_last = %s" if len(params) > 0 else " officer_last = %s"
         params.append(last_name)
     if len(params) == 0:
-        print("ERROR")
         return df
     query += ";"
     df = run_statement(query, tuple(params))
@@ -249,7 +241,6 @@ def register_route():
 @app.route('/admin')
 def admin():
 	if 'admin' in session:
-		connection.t = "a"
 		query = "SELECT username, badge_number FROM users"
 		badge_numbers = []
 		usernames = []
@@ -260,7 +251,7 @@ def admin():
 		zipped_data = zip(badge_numbers, usernames)
 		return render_template('admin.html', zipped_data=zipped_data)
 	else:
-		redirect(url_for('home'))
+		return redirect(url_for('home'))
 
 @app.route("/<badge_number>", methods=['POST', 'GET'])
 def officer_home(badge_number):
@@ -287,7 +278,6 @@ def officer_home(badge_number):
 
     search_type = ""
     if request.method == 'POST':
-        print("FORM:", request.form)
         for field in inmate_search_fields:
             if field in request.form:
                 search_type = "inmate"
@@ -562,7 +552,6 @@ def criminal_info(criminal_id):
 	court_fee = []
 	paid_amount = []
 	payment_due_date = []
-	print(df)
 	criminal_id_list = []
 	for i,j in df.iterrows():
 		fine_amount.append(j['fine_amount'])
